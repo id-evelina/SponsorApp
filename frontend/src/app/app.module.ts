@@ -5,6 +5,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http'; 
 import { MatToolbarModule } from '@angular/material';
 
+import { SponsorService } from './sponsor.service';
+
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditSponsorComponent } from './components/edit-sponsor/edit-sponsor.component';
@@ -41,9 +43,10 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
-    MatToolbarModule
+    MatToolbarModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [SponsorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

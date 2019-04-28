@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SponsorService } from '../../sponsor.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-matches-sponsor',
@@ -7,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MatchesSponsorComponent implements OnInit {
 
-  constructor() { }
+  constructor(private sponsorService: SponsorService) { }
 
   ngOnInit() {
   }
