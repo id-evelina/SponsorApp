@@ -1,3 +1,341 @@
-<p>
-  welcome works!
-</p>
+<div style= "display: block;" id="welcomeDiv">
+  <mat-grid-list cols="2" rowHeight="3:2" class="width-max">
+    <mat-grid-tile>
+      <mat-card class="width-50">
+        <section class="mat-typography" class="text-center">
+          <h3>New? Sign up to register</h3>
+        </section>
+        <form [formGroup]="registerForm">
+
+           
+
+          <mat-form-field class="mat-wrapper">
+            <input matInput placeholder="E-mail" formControlName="emailRegister" #emailRegister>
+            <mat-error *ngIf="registerForm.hasError('required', 'emailRegister')"> E-mail is required</mat-error>
+            <mat-error *ngIf="registerForm.hasError('email', 'emailRegister')">Please enter a valid e-mail address</mat-error>
+          </mat-form-field>
+
+          
+          <br>
+
+          <mat-form-field class="mat-wrapper">
+            <input matInput placeholder="Password" formControlName="passwordRegister" #passwordRegister>
+              <mat-error *ngIf="registerForm.hasError('required', 'passwordRegister')">
+              Please enter a password
+            </mat-error>
+          </mat-form-field>
+          <br><br>
+
+          <mat-form-field class="mat-wrapper">
+            <input matInput placeholder="Confirm password" formControlName="passwordConfirm" #passwordConfirm [errorStateMatcher]="matcher">
+            <mat-error *ngIf="registerForm.hasError('notSame')"> 
+              Passwords do not match
+            </mat-error>  
+          </mat-form-field>
+          <br><br>
+
+          <label id="account-label">Select what type of account you want</label>
+          <mat-radio-group aria-labelledby="account-label" [(ngModel)]="accountSelected" [ngModelOptions]="{standalone: true}" class="radio-group">
+            
+            <mat-radio-button value="Sponsor" class="radio-button">Sponsor</mat-radio-button>
+            <mat-radio-button value="Society" class="radio-button">Society</mat-radio-button>
+          </mat-radio-group>
+
+          <p class="text-center"> 
+          <button (click)="changeView(accountSelected)" [disabled]="registerForm.pristine || registerForm.invalid" mat-raised-button color="primary" >Sign Up</button>
+          </p>
+       
+
+
+      </form>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-card class="width-50">
+        <section class="mat-typography"  class="text-center">
+          <h3>Already registered? Login to enter</h3>
+        </section>
+        <form [formGroup]="loginForm" class="loginSociety">
+          <mat-form-field class="mat-wrapper">
+            <input matInput placeholder="E-mail" formControlName="emailLogin" #emailLogin>
+            <mat-error *ngIf="loginForm.hasError('required', 'emailLogin')"> E-mail is required</mat-error>
+            <mat-error *ngIf="loginForm.hasError('email', 'emailLogin')">Please enter a valid e-mail address</mat-error>
+          </mat-form-field>
+          <br>
+
+          <mat-form-field class="mat-wrapper">
+            <input matInput placeholder="Password" formControlName="passwordLogin" #passwordLogin>
+          </mat-form-field>
+          <br>
+          <p class="text-center">
+          <button mat-raised-button color="primary" type="submit" (click)="loginCheck(emailLogin.value, passwordLogin.value)" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
+          </p>
+        </form>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
+<div class="form" style="display: none;" id="registerSponsorDiv">
+  <mat-card>
+    <section class="mat-typography" class="text-center">
+      <h2 class="title-style">Please fill in some information about your company so we can show you the compatible societies</h2>
+    </section>
+    <mat-divider></mat-divider>
+    <br><br>
+
+    <section class="mat-typography" >
+      <h3 class="heading-style">Tell us about your company </h3>
+    </section>
+    <br><br>
+    <form [formGroup]="addSponsorForm">
+           
+      <mat-form-field class="mat-wrapper">
+        <input matInput placeholder="Name of your company" formControlName="name" #name>
+      </mat-form-field>
+      <br><br> 
+
+      <mat-form-field class="mat-wrapper">
+        <textarea matInput placeholder="Please share some information about your company to help societies learn about you" formControlName="about" #about cols="40" rows="5"></textarea>
+      </mat-form-field>
+      <br><br>
+
+      <label id="contactTypeSponsor">Select the way you prefer to be contacted</label>
+      <mat-radio-group aria-labelledby="contactTypeSponsor" [(ngModel)]="contactTypeSponsor" [ngModelOptions]="{standalone: true}" #contactType class="radio-group">
+        <mat-radio-button value="email" class="radio-button">E-mail</mat-radio-button><br><br>
+        <mat-radio-button value="phone" class="radio-button">Phone number</mat-radio-button> 
+      </mat-radio-group>
+      <br>
+
+      <mat-form-field class="mat-wrapper">
+        <input matInput placeholder="Enter your contact details" formControlName="contact" #contact>
+      </mat-form-field>
+      <br><br>
+      <mat-divider class="mat-divider-big"></mat-divider>
+      <br><br>
+
+      <section class="mat-typography">
+          <h3 class="heading-style">Tell us what you want from a society</h3>
+      </section>
+      <br>
+
+      <mat-form-field class="mat-wrapper">
+        <input matInput placeholder="Approximate number of members you wish the society to have" (change)="changedSocials(sizeCounter, size.value)" formControlName="size" #size >
+      </mat-form-field>
+      <br><br>
+
+      <mat-form-field class="mat-wrapper">
+          <input matInput placeholder="Approximate number of socials you wish the society to hold at your venue (0 if N/A)" (change)="changedSocials(socialsCounter, socials.value)" formControlName="socials" #socials>
+      </mat-form-field>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="publicity" [ngModelOptions]="{standalone: true}" (change)="changedPublicity(publicityCounter)" class="mat-wrapper" color="primary" >Choose if you wish the society to wear your logo on their kit/merchendise</mat-slide-toggle>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="promotionWant" [ngModelOptions]="{standalone: true}" (change)="changedPromotionSponsor(promotionSponsorCounter)" class="mat-wrapper" color="primary" >Choose if you wish for the society to promote you on social media</mat-slide-toggle>
+      <br><br>  
+
+      <mat-slide-toggle [(ngModel)]="useServices" [ngModelOptions]="{standalone: true}" (change)="changedUseServices(useServicesCounter)" class="mat-wrapper" color="primary" >Choose if you wish the society to use your service (e.g. taxis, applications)</mat-slide-toggle>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="additional" [ngModelOptions]="{standalone: true}" (change)="changedAdditional(additionalCounter)" class="mat-wrapper" color="primary" >Choose if you want any other additional benefits from the society (e.g. free tickets to events)</mat-slide-toggle>
+      <br><br>
+      <mat-divider class="mat-divider-big"></mat-divider>
+      <br><br>
+
+      <section class="mat-typography">
+        <h3 class="heading-style">Please rank how important each category is for you</h3>
+        <h4>You are given 10 points to allocate throughout all categories. The higher the points, the more you want that category.</h4>
+      </section>
+
+      <mat-form-field >
+        <mat-label> Size counter</mat-label>
+        <input matInput type="number" formControlName="sizeCounter" #sizeCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Socials counter</mat-label>
+        <input matInput type="number" formControlName="socialsCounter" #socialsCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Publicity counter</mat-label>
+        <input matInput type="number" formControlName="publicityCounter"  #publicityCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Promotion counter</mat-label>
+        <input matInput type="number" formControlName="promotionSponsorCounter" #promotionSponsorCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Services counter</mat-label>
+        <input matInput type="number" formControlName="useServicesCounter" #useServicesCounter  class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Additional counter</mat-label>
+        <input matInput type="number" formControlName="additionalCounter" #additionalCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+
+      <mat-error *ngIf="addSponsorForm.hasError('maxNumbers')"> 
+        Maximum number of points reached
+      </mat-error>  
+
+      <mat-divider class="mat-divider-big"></mat-divider>
+      <br><br>
+
+      <section class="mat-typography">
+          <h3 class="heading-style">Tell us what you can offer to societies</h3>
+      </section>
+      <br>
+
+        <mat-form-field class="mat-wrapper">
+          <input matInput placeholder="Approximate sum of funding you would be willing to offer" formControlName="money" #money>
+          <span matPrefix>£&nbsp;</span>
+      </mat-form-field>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="discount" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you are willing to offer any discount to the societies</mat-slide-toggle>
+      <br><br> 
+
+      <mat-slide-toggle [(ngModel)]="deals" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you are willing to offer any deals for the societies (including ones with other companies) </mat-slide-toggle>
+      <br><br>
+      
+      <mat-slide-toggle [(ngModel)]="promotionOffer" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you are willing to offer promotion for the society</mat-slide-toggle>
+      <br><br>
+      <mat-divider class="mat-divider-big"></mat-divider>
+      <br><br>
+
+      <p class="text-center">
+      <button type="submit" (click)="addSponsor(name.value, about.value, contactTypeSponsor, contact.value, 
+      size.value, sizeCounter.value, socials.value, socialsCounter.value, publicity, publicityCounter.value, promotionWant, promotionSponsorCounter.value, useServices, useServicesCounter.value, additional, additionalCounter.value, money.value, discount , deals, promotionOffer)"  mat-raised-button color="primary">Save your details</button>
+      </p>
+    </form>
+  </mat-card>
+</div>
+
+<div class="form" style="display: none;" id="registerSocietyDiv">
+  <mat-card>
+    <section class="mat-typography" class="text-center">
+      <h2 class="title-style">Please fill in some information about your society so we can find your potential sponsors</h2>
+    </section>
+    <mat-divider></mat-divider>
+    <br><br>
+
+    <section class="mat-typography" >
+      <h3 class="heading-style">Tell us about your society </h3>
+    </section>
+    <br><br>
+    <form [formGroup]="addSocietyForm">
+           
+      <mat-form-field class="mat-wrapper">
+        <input matInput placeholder="Name of your society" formControlName="nameSociety" #nameSociety>
+      </mat-form-field>
+      <br><br> 
+
+      <mat-form-field class="mat-wrapper">
+        <textarea matInput placeholder="Please share some information about your societies to make FIX" formControlName="aboutSociety" #aboutSociety cols="40" rows="5"></textarea>
+      </mat-form-field>
+      <br><br>
+
+      <label id="contactTypeSociety">Select the way you prefer to be contacted</label>
+      <mat-radio-group aria-labelledby="contactTypeSociety" [(ngModel)]="contactTypeSociety" [ngModelOptions]="{standalone: true}" #contactType class="radio-group">
+        <mat-radio-button value="email" class="radio-button">E-mail</mat-radio-button><br><br>
+        <mat-radio-button value="phone" class="radio-button">Phone number</mat-radio-button> 
+      </mat-radio-group>
+      <br>
+
+      <mat-form-field class="mat-wrapper">
+        <input matInput placeholder="Enter your contact details" formControlName="contactSociety" #contactSociety>
+      </mat-form-field>
+      <br><br>
+      <mat-divider class="mat-divider-big"></mat-divider>
+      <br><br>
+
+      <section class="mat-typography">
+          <h3 class="heading-style">Tell us what you want from a sponsor</h3>
+      </section>
+      <br>
+
+      <mat-form-field class="mat-wrapper">
+          <input matInput placeholder="Enter the sum of funding you would want from the sponsor" formControlName="moneySociety" (change)="changedMoney(moneyCounter, moneySociety.value)" #moneySociety>
+      </mat-form-field>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="discountSociety" [ngModelOptions]="{standalone: true}" (change)="changedDiscount(discountCounter)" class="mat-wrapper" color="primary" >Choose if you are interested in discounts sponsors could offer</mat-slide-toggle>
+      <br><br> 
+
+      <mat-slide-toggle [(ngModel)]="dealsSociety" [ngModelOptions]="{standalone: true}" (change)="changedDeals(dealsCounter)" class="mat-wrapper" color="primary" >Choose if you are interested in any deals the sponsor could offer (including ones with other companies)</mat-slide-toggle>
+      <br><br>
+      
+      <mat-slide-toggle [(ngModel)]="promotionWantSociety" [ngModelOptions]="{standalone: true}" class="mat-wrapper" (change)="changedPromotionSociety(promotionSocietyCounter)" color="primary" >Choose if you are interested in any form of promotion offered by the sponsor</mat-slide-toggle>
+      <br><br>
+      <mat-divider class="mat-divider-big"></mat-divider>
+      <br><br>
+
+      <section class="mat-typography">
+        <h3 class="heading-style">Please rank how important each category is for you</h3>
+        <h4>You are given 10 points to allocate throughout all categories. The higher the points, the more you want that category.</h4>
+      </section>
+
+      <mat-form-field >
+        <mat-label> Money counter</mat-label>
+        <input matInput type="number" formControlName="moneyCounter" #moneyCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Discount counter</mat-label>
+        <input matInput type="number" formControlName="discountCounter" #discountCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Deals counter</mat-label>
+        <input matInput type="number" formControlName="dealsCounter"  #dealsCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+      <mat-form-field>
+        <mat-label> Promotion counter</mat-label>
+        <input matInput type="number" formControlName="promotionSocietyCounter" #promotionSocietyCounter class="counters" min="0" max="10" >
+      </mat-form-field>
+      <br> <br>
+
+      <mat-error *ngIf="addSocietyForm.hasError('maxNumbers')"> 
+        Maximum number of points reached
+      </mat-error>  
+
+      <mat-divider class="mat-divider-big"></mat-divider>
+      <br><br>
+
+      <section class="mat-typography">
+          <h3 class="heading-style">Tell us what you can offer to sponsors</h3>
+      </section>
+      <br>
+
+      <mat-form-field class="mat-wrapper">
+          <input matInput placeholder="Approximate number of members in your society" formControlName="sizeSociety" #sizeSociety >
+      </mat-form-field>
+      <br><br>
+
+      <mat-form-field class="mat-wrapper">
+          <input matInput placeholder="Approximate number of socials you would be willing to do at the sponsor's venue (if none - put 0)" formControlName="socialsSociety" #socialsSociety>
+      </mat-form-field>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="publicitySociety" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you are willing to wear the sponsor's logo on your kit/merchendise</mat-slide-toggle>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="promotionOfferSociety" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you are willing to promote the sponsor on social media</mat-slide-toggle>
+      <br><br>  
+
+      <mat-slide-toggle [(ngModel)]="useServicesSociety" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you would be willing to use the sponsor' services</mat-slide-toggle>
+      <br><br>
+
+      <mat-slide-toggle [(ngModel)]="additionalSociety" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you have any other additional ways to provide to the sponsor (e.g. free tickets to events)</mat-slide-toggle>
+      <br><br>
+      <p class="text-center">
+      <button type="submit" (click)="addSociety(nameSociety.value, aboutSociety.value, contactTypeSociety, contactSociety.value, moneySociety.value, moneyCounter.value, discountSociety, discountCounter.value, dealsSociety, dealsCounter.value, promotionWantSociety, promotionSocietyCounter.value, sizeSociety.value, socialsSociety.value, publicitySociety, promotionOfferSociety, useServicesSociety, additionalSociety)"  mat-raised-button color="primary">Save your details</button>
+      </p>
+    </form>
+  </mat-card>
+</div>

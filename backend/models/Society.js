@@ -5,6 +5,12 @@ const Schema = mongoose.Schema;
 let Society = new Schema({
 
     //_id: mongoose.Schema.Types.ObjectId,
+    email: {
+        type: String
+    },
+    password: {
+        type: String
+    },
     name: {
         type: String
     },
@@ -17,17 +23,30 @@ let Society = new Schema({
     contact: {
         type: String
     },
+
     money: {
+        type: Number
+    },
+    moneyCounter: {
         type: Number
     },
     discount: {
         type: Boolean
     },
-    promotionWant: {
-        type: Boolean
+    discountCounter: {
+        type: Number
     },
     deals: {
         type: Boolean
+    },
+    dealsCounter: {
+        type: Number
+    },
+    promotionWant: {
+        type: Boolean
+    },
+    promotionWantCounter: {
+        type: Number
     },
     size: {
         type: Number
@@ -41,10 +60,10 @@ let Society = new Schema({
     promotionOffer: {
         type: Boolean
     },
-    additional: {
+    useServices: {
         type: Boolean
     },
-    useServices: {
+    additional: {
         type: Boolean
     }
 });

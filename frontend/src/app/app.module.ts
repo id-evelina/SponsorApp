@@ -3,14 +3,15 @@ import { NgModule } from '@angular/core';
 
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http'; 
-import { MatToolbarModule } from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatToolbarModule, MatTooltipModule, MatSnackBarModule, MatButtonModule, MatGridListModule, MatDividerModule, MatCardModule, MatSlideToggleModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, MatRadioModule } from '@angular/material';
 
 import { SponsorService } from './sponsor.service';
+import { FormsModule } from '@angular/forms';
+
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { EditSponsorComponent } from './components/edit-sponsor/edit-sponsor.component';
-import { EditSocietyComponent } from './components/edit-society/edit-society.component';
 import { ProfileSponsorComponent } from './components/profile-sponsor/profile-sponsor.component';
 import { ProfileSocietyComponent } from './components/profile-society/profile-society.component';
 import { MatchesSponsorComponent } from './components/matches-sponsor/matches-sponsor.component';
@@ -19,20 +20,16 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 
 const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
-  { path: 'profileSociety', component: ProfileSocietyComponent },
-  { path: 'profileSponsor', component: ProfileSponsorComponent },
-  { path: 'editSociety', component: EditSocietyComponent },
-  { path: 'editSponsor', component: EditSponsorComponent },
-  { path: 'matchesSociety', component: MatchesSocietyComponent },
-  { path: 'matchesSponsor', component: MatchesSponsorComponent },
+  { path: 'profileSociety/:id', component: ProfileSocietyComponent },
+  { path: 'profileSponsor/:id', component: ProfileSponsorComponent },
+  { path: 'matchesSociety/:id', component: MatchesSocietyComponent },
+  { path: 'matchesSponsor/:id', component: MatchesSponsorComponent },
   { path: '', redirectTo: '/welcome', pathMatch: 'full'}
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    EditSponsorComponent,
-    EditSocietyComponent,
     ProfileSponsorComponent,
     ProfileSocietyComponent,
     MatchesSponsorComponent,
@@ -43,8 +40,22 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
+    HttpClientModule,
     MatToolbarModule,
-    HttpClientModule
+    MatTooltipModule, 
+    MatSnackBarModule, 
+    MatButtonModule, 
+    MatGridListModule, 
+    MatDividerModule, 
+    MatCardModule, 
+    MatSlideToggleModule, 
+    MatFormFieldModule, 
+    MatInputModule, 
+    MatOptionModule, 
+    MatSelectModule, 
+    MatRadioModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [SponsorService],
   bootstrap: [AppComponent]

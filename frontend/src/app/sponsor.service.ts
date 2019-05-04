@@ -27,7 +27,7 @@ export class SponsorService {
     return this.http.get(`${this.uri}/societies/${id}`);
   }
 
-  addSponsor(name, about, contactType, contact, size, socials, publicity, promotionWant, additional, useServices, money, discount, deals, promotionOffer) {
+  addSponsor(name, about, contactType, contact, size, sizeCounter, socials, socialsCounter, publicity, publicityCounter, promotionWant, promotionWantCounter, useServices, useServicesCounter, additional, additionalCounter, money, discount, deals, promotionOffer) {
     const sponsor = {
       name: name,
       about: about,
@@ -35,11 +35,17 @@ export class SponsorService {
       contact: contact,
 
       size: size,
+      sizeCounter: sizeCounter,
       socials: socials,
+      socialsCounter: socialsCounter,
       publicity: publicity,
+      publicityCounter: publicityCounter,
       promotionWant: promotionWant,
-      additional: additional,
+      promotionWantCounter: promotionWantCounter,
       useServices: useServices,
+      useServicesCounter: useServicesCounter,
+      additional: additional,
+      additionalCounter: additionalCounter,
 
       money: money,
       discount: discount,
@@ -49,7 +55,7 @@ export class SponsorService {
     return this.http.post(`${this.uri}/sponsors/add`, sponsor);
   }
 
-  addSociety(name, about, contactType, contact, money, discount, promotionWant, deals, size, socials, publicity, promotionOffer, additional, useServices) {
+  addSociety(name, about, contactType, contact, money, moneyCounter, discount, discountCounter, deals, dealsCounter, promotionWant, promotionWantCounter, size, socials, publicity, promotionOffer, useServices, additional) {
     const society = {
       name: name,
       about: about,
@@ -57,21 +63,25 @@ export class SponsorService {
       contact: contact,
 
       money: money,
+      moneyCounter: moneyCounter,
       discount: discount,
-      promotionWant: promotionWant,
+      discountCounter: discountCounter,
       deals: deals,
+      dealsCounter: dealsCounter,
+      promotionWant: promotionWant,
+      promotionWantCounter: promotionWantCounter,
 
       size: size,
       socials: socials,
       publicity: publicity,
       promotionOffer: promotionOffer,
-      additional: additional,
       useServices: useServices, 
+      additional: additional
     };
-    return this.http.post(`${this.uri}/socities/add`, society);
+    return this.http.post(`${this.uri}/societies/add`, society);
   }
 
-  editSponsor(id, name, about, contactType, contact, size, socials, publicity, promotionWant, additional, useServices, money, discount, deals, promotionOffer) {
+  editSponsor(id, name, about, contactType, contact, size, sizeCounter, socials, socialsCounter, publicity, publicityCounter, promotionWant, promotionWantCounter, useServices, useServicesCounter, additional, additionalCounter, money, discount, deals, promotionOffer) {
     const sponsor = {
       name: name,
       about: about,
@@ -79,11 +89,17 @@ export class SponsorService {
       contact: contact,
 
       size: size,
+      sizeCounter: sizeCounter,
       socials: socials,
+      socialsCounter: socialsCounter,
       publicity: publicity,
+      publicityCounter: publicityCounter,
       promotionWant: promotionWant,
-      additional: additional,
+      promotionWantCounter: promotionWantCounter,
       useServices: useServices,
+      useServicesCounter: useServicesCounter,
+      additional: additional,
+      additionalCounter: additionalCounter,
 
       money: money,
       discount: discount,
@@ -93,7 +109,7 @@ export class SponsorService {
     return this.http.post(`${this.uri}/sponsors/edit/${id}`, sponsor);
   }
 
-  editSociety(id, name, about, contactType, contact, money, discount, promotionWant, deals, size, socials, publicity, promotionOffer, additional, useServices) {
+  editSociety(id, name, about, contactType, contact, money, moneyCounter, discount, discountCounter, deals, dealsCounter, promotionWant, promotionWantCounter, size, socials, publicity, promotionOffer, useServices, additional) {
     const society = {
       name: name,
       about: about,
@@ -101,18 +117,27 @@ export class SponsorService {
       contact: contact,
 
       money: money,
+      moneyCounter: moneyCounter,
       discount: discount,
-      promotionWant: promotionWant,
+      discountCounter: discountCounter,
       deals: deals,
+      dealsCounter: dealsCounter,
+      promotionWant: promotionWant,
+      promotionWantCounter: promotionWantCounter,
 
       size: size,
       socials: socials,
       publicity: publicity,
       promotionOffer: promotionOffer,
-      additional: additional,
       useServices: useServices,
+      additional: additional
     };
     return this.http.post(`${this.uri}/societies/edit/${id}`, society);
+  }
+
+  //TODO
+  loginCheck(name, password) {
+    return this.http.get(`${this.uri}/societies/${name}`);
   }
   
 }

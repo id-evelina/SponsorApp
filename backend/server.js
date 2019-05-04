@@ -59,7 +59,7 @@ router.route('/sponsorsPreference').get((req, res) => {
 
 router.route('/sponsors/:id').get((req, res) => {
     Sponsor.findById(req.params.id, (err, sponsor) => {
-        if (err)
+        if (err) 
             console.log(err);
         else
             res.json(sponsor);
@@ -79,6 +79,7 @@ router.route('/societies/add').post((req, res) => {
     let society = new Society(req.body);
     society.save()
         .then(society => {
+            res.json(society.id);
             res.status(200).json({'Society': 'Added successfully'});
         })
         .catch(err => {
@@ -90,6 +91,7 @@ router.route('/sponsors/add').post((req, res) => {
     let sponsor = new Sponsor(req.body);
     sponsor.save()
         .then(sponsor => {
+            res.json(sponsor.id);
             res.status(200).json({'Sponsor': 'Added successfully'});
         })
         .catch(err => {
@@ -106,16 +108,24 @@ router.route('/sponsors/edit/:id').post((req, res) => {
             sponsor.about = req.body.about;
             sponsor.contactType = req.body.contactType;
             sponsor.contact = req.body.contactType;
+
+            sponsor.size = req.body.size;
+            sponsor.sizeCounter = req.body.sizeCounter;
+            sponsor.socials = req.body.socials;
+            sponsor.socialsCounter = req.body.socialsCounter;
+            sponsor.publicity = req.body.publicity;
+            sponsor.publicityCounter = req.body.publicityCounter;
+            sponsor.promotionWant = req.body.promotionWant;
+            sponsor.promotionWantCounter = req.body.promotionWantCounter;
+            sponsor.useServices = req.body.useServices;
+            sponsor.useServicesCounter = req.body.useServicesCounter;
+            sponsor.additional = req.body.additional;
+            sponsor.additionalCounter = req.body.additionalCounter;
+
             sponsor.money = req.body.money;
             sponsor.discount = req.body.discount;
-            sponsor.promotionWant = req.body.promotionWant;
             sponsor.deals = req.body.deals;
-            sponsor.size = req.body.size;
-            sponsor.socials = req.body.socials;
-            sponsor.publicity = req.body.publicity;
-            sponsor.promotionWant = req.body.promotionWant;
-            sponsor.additional= req.body.additional;
-            sponsor.useServices = req.body.useServices;
+            sponsor.promotionOffer = req.body.promotionOffer;
 
             sponsor.save().then(sponsor => {
                 res.json('Update done');
@@ -135,16 +145,22 @@ router.route('/societies/edit/:id').post((req, res) => {
             society.about = req.body.about;
             society.contactType = req.body.contactType;
             society.contact = req.body.contactType;
+
             society.money = req.body.money;
+            society.moneyCounter = req.body.moneyCounter;
             society.discount = req.body.discount;
-            society.promotionWant = req.body.promotionWant;
+            society.discountCounter = req.body.discountCounter;
             society.deals = req.body.deals;
+            society.dealsCounter = req.body.dealsCounter;
+            society.promotionWant = req.body.promotionWant;
+            society.promotionWantCounter = req.body.promotionWantCounter;
+
             society.size = req.body.size;
             society.socials = req.body.socials;
             society.publicity = req.body.publicity;
             society.promotionOffer = req.body.promotionOffer;
-            society.additional= req.body.additional;
             society.useServices = req.body.useServices;
+            society.additional= req.body.additional;
 
             society.save().then(society => {
                 res.json('Update done');
