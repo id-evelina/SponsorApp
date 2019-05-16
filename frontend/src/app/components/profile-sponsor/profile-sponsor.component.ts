@@ -1,91 +1,186 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SponsorService } from '../../sponsor.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, FormsModule, NgForm } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatTable } from '@angular/material';
 
 @Component({
   selector: 'app-profile-sponsor',
   templateUrl: './profile-sponsor.component.html',
-  styleUrls: ['./profile-sponsor.component.css']
+  styleUrls: ['./profile-sponsor.component.css', './../../app.component.css']
 })
 export class ProfileSponsorComponent implements OnInit {
 
-  profileSponsorForm: FormGroup;
+  /* My modified code starts here */
 
-  contactType: String;
-  discount = false;
-  deals = false;
-  promotionWant = false;
-  publicity = false;
-  promotionOffer = false;
-  useServices = false;
-  additional = false;
+  @ViewChild('wantsTable') wantsTable: MatTable<Element>;
+  @ViewChild('offersTable') offersTable: MatTable<Element>;
 
   id: String;
-  sponsor: any = {};
+  name: String;
+  contact : any;
+  about: String;
 
-  constructor(private sponsorService: SponsorService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder, private snackBar: MatSnackBar) { 
+  sponsor : any = {};
+  sponsorWants : any = [];
+  sponsorOffers : any = [];
 
-    this.profileSponsorForm = this.fb.group({
-      name: '',
-      about: '',
-      contact: '',
-      size: '',
-      sizeCounter: [{value: 0, disabled: true}],
-      socials: '',
-      socialsCounter: [{value: 0, disabled: true}],
-      publicityCounter: [{value: 0, disabled: true}],
-      promotionWantCounter: [{value: 0, disabled: true}],
-      useServicesCounter: [{value: 0, disabled: true}],
-      additionalCounter: [{value: 0, disabled: true}],
-      money: ''
-    }, { validator: this.countChecker });
+  categoriesWant : any = [];
+  yesnoWant : any = [];
+  scores : any = [];
+  categoriesOffer : any = [];
+  yesnoOffer : any = [];
+
+  wantsColumns = ['category', 'yesno', 'points'];
+  offersColumns = ['category', 'yesno'];
+
+  constructor(private sponsorService: SponsorService, private router: Router, private route: ActivatedRoute) {}
+
+  updateWantsTable (sponsor) {
+    if(sponsor['size'] != 0) {
+      this.categoriesWant.push("Size of society");
+      this.yesnoWant.push(sponsor['size']);
+      this.scores.push(sponsor['sizeCounter']);
+    }
+    if(sponsor['socials'] != 0) {
+      this.categoriesWant.push("Socials wanted");
+      this.yesnoWant.push(sponsor['socials']);
+      this.scores.push(sponsor['socialsCounter']);
+    }
+    if(!sponsor['publicity']) {
+      this.categoriesWant.push("Publicity wanted");
+      this.yesnoWant.push("Yes");
+      this.scores.push(sponsor['publicityCounter']);
+    }
+    if(!sponsor['promotionWant']) {
+      this.categoriesWant.push("Promotion wanted");
+      this.yesnoWant.push("Yes");
+      this.scores.push(sponsor['promotionWantCounter']);
+    }
+    if(!sponsor['useServices']) {
+      this.categoriesWant.push("Usage of your services");
+      this.yesnoWant.push("Yes");
+      this.scores.push(sponsor['useServicesCounter']);
+    }
+    if(!sponsor['additional']) {
+      this.categoriesWant.push("Additional offers");
+      this.yesnoWant.push("Yes");
+      this.scores.push(sponsor['additionalCounter']);
+    }
+
+    for (var i = 0; i < this.categoriesWant.length; i++) {
+      var sponsorPush = {category: this.categoriesWant[i], yesno: this.yesnoWant[i], points : this.scores[i]};
+      this.sponsorWants.push(sponsorPush);
+    }
   }
 
-  countChecker(sf: FormGroup) { 
-    let sum = 0;
-    let sizeCounter = sf.get("sizeCounter").value;
-    let socialsCounter = sf.get("socialsCounter").value;
-    let publicityCounter = sf.get("publicityCounter").value;
-    let promotionWantCounter = sf.get("promotionWantCounter").value;
-    let useServicesCounter = sf.get("useServicesCounter").value;
-    let additionalCounter = sf.get("additionalCounter").value;
-    sum = sizeCounter + socialsCounter + publicityCounter + promotionWantCounter + useServicesCounter + additionalCounter;
+  updateOffersTable (sponsor) {
+    if(sponsor['money'] != 0) {
+      this.categoriesOffer.push("Funding available");
+      this.yesnoOffer.push(sponsor['money']);
+    }
+    if(!sponsor['discount']) {
+      this.categoriesOffer.push("Offer discounts");
+      this.yesnoOffer.push("Yes");
+    }
+    if(sponsor['deals'] != 0) {
+      this.categoriesOffer.push("Offer deals");
+      this.yesnoOffer.push("Yes");
+    }
+    if(!sponsor['promotionOffer']) {
+      this.categoriesOffer.push("Offer promotion");
+      this.yesnoOffer.push("Yes");
+    }
 
-    return sum < 11 ? null: {maxNumbers : true}
+    for (var i = 0; i < this.categoriesOffer.length; i++) {
+      var sponsorPush = {category: this.categoriesOffer[i], yesno: this.yesnoOffer[i]};
+      this.sponsorOffers.push(sponsorPush);
+    }
   }
 
-  changedSizeCounter(sizeCounter, size) {
-    sizeCounter.disabled = (size == 0) ;
+  editSponsor() {
+    this.router.navigate([`/editSponsor/${this.id}`]);
   }
 
-  changedSocials(socialsCounter, socials) {
-    socialsCounter.disabled = (socials == 0) ;
+  deleteSponsor() {
+    this.router.navigate([`/`]);
   }
 
-  changedPublicity(publicityCounter) {
-    publicityCounter.disabled = !this.publicity;
+  findMatches() {
+    this.applyMarriage();
+    this.router.navigate([`/matchesSponsor/${this.id}`]);
   }
 
-  changedPromotionWant(promotionCounter) {
-    promotionCounter.disabled = !this.promotionWant;
-  }
-
-  changedUseServices(useServicesCounter) {
-    useServicesCounter.disabled = !this.useServices;
-  }
-
-  changedAdditional(additionalCounter) {
-    additionalCounter.disabled = !this.additional;
-  }
-
-  editSponsor(name, about, contactType, contact, size, sizeCounter, socials, socialsCounter, publicity, publicityCounter, promotionWant, promotionWantCounter, useServices, useServicesCounter, additional, additionalCounter, money, discount, deals, promotionOffer) {
-    this.sponsorService.editSponsor(this.id, name, about, contactType, contact, size, sizeCounter, socials, socialsCounter, publicity, publicityCounter, promotionWant, promotionWantCounter, useServices, useServicesCounter, additional, additionalCounter, money, discount, deals, promotionOffer).subscribe(() => {
-      this.snackBar.open('Profile updated successfully', 'Ok', {
-        duration: 3000
+  applyMarriage(){
+    var societiesPreference : any = [];
+    var sponsorsPreference : any = [];
+  
+    this.sponsorService.getSocietyPreference().subscribe(res => {
+      societiesPreference = res;
+      this.sponsorService.getSponsorPreference().subscribe(res => {
+          sponsorsPreference = res;
+          this.engageEveryone(sponsorsPreference, societiesPreference)
       });
     });
+  }
+  engageEveryone(sponsorsPreference, societiesPreference) {
+    var societyPreference : any = {};
+    var sponsorPreference : any = {};
+    var done;
+    do {
+      done = true;
+      for (var i = 0; i < societiesPreference.length; i++) {
+        societyPreference = societiesPreference[i];
+        var listIndex = 0;
+        if(societyPreference.bestMatch) {
+          done = false;
+          //going through a selected society's own preference list of sponsors
+          if (listIndex < societyPreference['preferenceList'].length) {
+            var sponsorId = societyPreference['preferenceList'][listIndex].sponsor;
+            listIndex++;
+
+            //going through sponsorsPreference to find the selected sponsor's details such as their best match
+            for (i = 0; i < sponsorsPreference.length; i++) {
+              if(sponsorsPreference[i].sponsor === sponsorId)
+                sponsorPreference = sponsorsPreference[i];
+            }
+            if(!sponsorPreference.bestMatch || prefers(sponsorPreference, societyPreference)) {
+              engage(sponsorPreference, societyPreference);
+            }
+          }
+        }
+      }
+    } while (!done);
+
+    //returns true if the given user is preferred over the current bestMatch
+    function prefers (user, societyPreference) {
+      return rank(user, societyPreference['preferenceList']) < rank(societyPreference.bestMatch, societyPreference['preferenceList']);
+    }
+
+    //returns the rank of a user in the list 
+    function rank (user, preferenceList) {
+      for (var i = 0; i < preferenceList.length; i++) {
+        if (preferenceList[i] === user)
+          return i;
+      }
+      return preferenceList.length + 1;
+    }
+
+    function engage(sponsorPreference, societyPreference) {
+      if(sponsorPreference.bestMatch) {
+        for (var i = 0; i < societiesPreference.length; i++) {
+          if (societiesPreference.society === sponsorPreference.bestMatch)
+            societiesPreference.society = null;
+        }
+        sponsorPreference.bestMatch = societyPreference.society; 
+      }
+      if (societyPreference.bestMatch) {
+        for (var i = 0; i < sponsorsPreference.length; i++) {
+          if (sponsorsPreference.sponsor === societyPreference.bestMatch)
+            sponsorsPreference.sponsor = null;
+        }
+        societyPreference.bestMatch = sponsorPreference.sponsor;
+      }
+    }
   }
 
   ngOnInit() {
@@ -93,47 +188,13 @@ export class ProfileSponsorComponent implements OnInit {
       this.id = params.id;
       this.sponsorService.getSponsorsById(this.id).subscribe(res => {
         this.sponsor = res;
-        this.profileSponsorForm.get('name').setValue(this.sponsor.name);
-        this.profileSponsorForm.get('about').setValue(this.sponsor.about);
-        this.contactType = this.sponsor.contactType;
-        this.profileSponsorForm.get('contact').setValue(this.sponsor.contact);
-        this.profileSponsorForm.get('size').setValue(this.sponsor.size);
-        this.profileSponsorForm.get('sizeCounter').setValue(this.sponsor.sizeCounter);
-        this.profileSponsorForm.get('socials').setValue(this.sponsor.socials);
-        this.profileSponsorForm.get('socialsCounter').setValue(this.sponsor.socialsCounter);
-        this.publicity = this.sponsor.publicity;
-        this.profileSponsorForm.get('publicityCounter').setValue(this.sponsor.publicityCounter);
-        this.promotionWant = this.sponsor.promotionWant;
-        this.profileSponsorForm.get('promotionWantCounter').setValue(this.sponsor.promotionWantCounter);
-        console.log(this.sponsor.promotionWantCounter);
-        this.useServices = this.sponsor.useServices;
-        this.profileSponsorForm.get('useServicesCounter').setValue(this.sponsor.useServicesCounter);
-        this.additional = this.sponsor.additional;
-        this.profileSponsorForm.get('additionalCounter').setValue(this.sponsor.additionalCounter);
-        this.profileSponsorForm.get('money').setValue(this.sponsor.money);
-        this.discount = this.sponsor.discount;
-        this.deals = this.sponsor.deals;
-        this.promotionOffer = this.sponsor.promotionOffer;
-
-
-        if(this.sponsor.sizeCounter > 0) {
-          this.profileSponsorForm.get('sizeCounter').enable();
-        }
-        if(this.sponsor.socialsCounter > 0) {
-          this.profileSponsorForm.get('socialsCounter').enable();
-        }
-        if(this.sponsor.publicityCounter > 0) {
-          this.profileSponsorForm.get('publicityCounter').enable();
-        }
-        if(this.sponsor.promotionWantCounter > 0) {
-          this.profileSponsorForm.get('promotionWantCounter').enable();
-        }
-        if(this.sponsor.useServicesCounter > 0) {
-          this.profileSponsorForm.get('useServicesCounter').enable();
-        }
-        if(this.sponsor.additionalCounter > 0) {
-          this.profileSponsorForm.get('additionalCounter').enable();
-        }
+        this.name = this.sponsor.name;
+        this.contact = this.sponsor.contact;
+        this.about = this.sponsor.about; 
+        this.updateWantsTable(this.sponsor);
+        this.updateOffersTable(this.sponsor);
+        this.wantsTable.renderRows();
+        this.offersTable.renderRows();
       });
     });
   }

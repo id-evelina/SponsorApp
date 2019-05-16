@@ -6,3 +6,34 @@
   background: #e1edf4;
 }
 
+.text-center{
+  text-align: center;
+}
+
+.form{
+  width:70%;
+  margin: 0 auto;
+}
+
+.heading-style {
+  font-weight:bold;
+  font-size:16pt;
+  color: #386f91;
+  }
+  
+.title-style {
+   color: #062f70;
+   font-size: 20pt; 
+}
+
+.mat-wrapper { 
+  margin: 0 auto;
+  width:100% !important;
+}
+  
+.mat-divider-big {
+  display: block;
+  margin: 0;
+  border-top-width: 10px;
+  border-top-style: solid;
+}

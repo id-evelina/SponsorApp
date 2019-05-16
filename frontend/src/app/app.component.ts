@@ -8,5 +8,5 @@ import { hammerjs } from '../../node_modules/hammerjs';
 })
 export class AppComponent {
   hammerjs = hammerjs;
-  title = 'frontend';
+  title = 'A tool for helping sponsors and societies discover each other';
 }

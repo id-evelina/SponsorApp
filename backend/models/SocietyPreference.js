@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 let SocietyPreference = new Schema({
+    /* My modified code starts here */
 
     society: { 
         type: mongoose.Schema.Types.ObjectId, 
@@ -10,14 +11,14 @@ let SocietyPreference = new Schema({
     },
     bestMatch: {
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Sponsor'
+        ref: 'Sponsor',
+        default: null
     },
-    preferenceList: [ 
-        {
-            name: String,
-            score : Number
-        }
-    ]
+    preferenceList : [{
+        sponsor : String,
+        matchScore : String,
+        notMatch : []
+    }]
 });
 
 export default mongoose.model('SocietyPreference', SocietyPreference);

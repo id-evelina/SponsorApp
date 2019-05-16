@@ -1,117 +1,196 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SponsorService } from '../../sponsor.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, FormsModule, NgForm } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatTableDataSource, MatTable } from '@angular/material';
+
 
 @Component({
   selector: 'app-profile-society',
   templateUrl: './profile-society.component.html',
-  styleUrls: ['./profile-society.component.css']
+  styleUrls: ['./profile-society.component.css', './../../app.component.css']
 })
 export class ProfileSocietyComponent implements OnInit {
 
-  profileSocietyForm : FormGroup;
+  /* My modified code starts here */
 
-  contactType: String;
-  discount = false;
-  deals = false;
-  promotionWant = false;
-  publicity = false;
-  promotionOffer = false;
-  useServices = false;
-  additional = false;
+  @ViewChild('wantsTable') wantsTable: MatTable<Element>;
+  @ViewChild('offersTable') offersTable: MatTable<Element>;
 
   id: String;
-  society: any = {};
+  name: String;
+  contact : any;
+  about: String;
 
-  constructor(private sponsorService: SponsorService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder, private snackBar: MatSnackBar) { 
+  society : any = {};
+  societyWants : any = [];
+  societyOffers : any = [];
 
-    this.profileSocietyForm = this.fb.group({
-      name: '',
-      about: '',
-      contact: '',
-      money: '',
-      moneyCounter: [{value: 0, disabled: true}],
-      discountCounter: [{value: 0, disabled: true}],
-      dealsCounter: [{value: 0, disabled: true}],
-      promotionWantCounter: [{value: 0, disabled: true}],
-      size: '',
-      socials: ''
-    }, { validator: this.countChecker });
+  categoriesWant : any = [];
+  yesnoWant : any = [];
+  scores : any = [];
+  categoriesOffer : any = [];
+  yesnoOffer : any = [];
+
+  wantsColumns = ['category', 'yesno', 'points'];
+  offersColumns = ['category', 'yesno'];
+
+constructor(private sponsorService: SponsorService, private router: Router, private route: ActivatedRoute) {}
+
+updateWantsTable (society) {
+  if(society['money'] != 0) {
+    this.categoriesWant.push("Funding wanted");
+    this.yesnoWant.push(society['money']);
+    this.scores.push(society['moneyCounter']);
+  }
+  if(society['discount'] != 0) {
+    this.categoriesWant.push("Discounts offered by companies");
+    this.yesnoWant.push("Yes");
+    this.scores.push(society['discountCounter']);
+  }
+  if(!society['deals']) {
+    this.categoriesWant.push("Deals with companies wanted");
+    this.yesnoWant.push("Yes");
+    this.scores.push(society['dealsCounter']);
+  }
+  if(!society['promotionWant']) {
+    this.categoriesWant.push("Promotion wanted");
+    this.yesnoWant.push("Yes");
+    this.scores.push(society['promotionWantCounter']);
+  }
+ 
+  for (var i = 0; i < this.categoriesWant.length; i++) {
+    var societyPush = {category: this.categoriesWant[i], yesno: this.yesnoWant[i], points : this.scores[i]};
+    this.societyWants.push(societyPush);
+  }
+}
+
+updateOffersTable (society) {
+  if(society['size'] != 0) {
+    this.categoriesOffer.push("Size of society");
+    this.yesnoOffer.push(society['size']);
+  }
+  if(!society['socials']) {
+    this.categoriesOffer.push("Number of socials willing to be hosted");
+    this.yesnoOffer.push(society['socials']);
+  }
+  if(society['publicity'] != 0) {
+    this.categoriesOffer.push("Publicity");
+    this.yesnoOffer.push("Yes");
+  }
+  if(!society['promotionOffer']) {
+    this.categoriesOffer.push("Offer promotion");
+    this.yesnoOffer.push("Yes");
   }
 
-  countChecker(sf: FormGroup) { 
-    let sum = 0;
-    let moneyCounter = sf.get("moneyCounter").value;
-    let dealsCounter = sf.get("dealsCounter").value;
-    let discountCounter = sf.get("discountCounter").value;
-    let promotionWantCounter = sf.get("promotionWantCounter").value;
-    sum = moneyCounter + dealsCounter + discountCounter + promotionWantCounter;
-
-    return sum < 11 ? null: {maxNumbers : true}
+  if(!society['useServices']) {
+    this.categoriesOffer.push("Usage of your services");
+    this.yesnoOffer.push("Yes");
+  }
+  if(!society['additional']) {
+    this.categoriesOffer.push("Additional offers");
+    this.yesnoOffer.push("Yes");
   }
 
-  changedMoney(moneyCounter, money) {
-    moneyCounter.disabled = (money == 0) ;
+  for (var i = 0; i < this.categoriesOffer.length; i++) {
+    var societyPush = {category: this.categoriesOffer[i], yesno: this.yesnoOffer[i]};
+    this.societyOffers.push(societyPush);
   }
+}
 
-  changedDiscount(discountCounter) {
-    discountCounter.disabled = !this.discount;
-  }
+editSociety() {
+  this.router.navigate([`/editSociety/${this.id}`]);
+}
 
-  changedDeals(dealsCounter) {
-    dealsCounter.disabled = !this.deals;
-  }
+findMatches() {
+  this.applyMarriage();
+  this.router.navigate([`/matchesSociety/${this.id}`]);
+}
 
-  changedPromotion(promotionSponsorCounter) {
-    promotionSponsorCounter.disabled = !this.promotionWant;
-  }
-  
-  editSociety(name, about, contactType, contact, money, moneyCounter, discount, discountCounter, deals, dealsCounter, promotionWant, promotionWantCounter, size, socials, publicity, promotionOffer, useServices, additional) {
-    this.sponsorService.editSociety(this.id, name, about, contactType, contact, money, moneyCounter, discount, discountCounter, deals, dealsCounter, promotionWant, promotionWantCounter, size, socials, publicity, promotionOffer, useServices, additional).subscribe(() => {
-      this.snackBar.open('Profile updated successfully', 'Ok', {
-        duration: 3000
-      });
+applyMarriage(){
+  var societiesPreference : any = [];
+  var sponsorsPreference : any = [];
+
+  this.sponsorService.getSocietyPreference().subscribe(res => {
+    societiesPreference = res;
+    this.sponsorService.getSponsorPreference().subscribe(res => {
+        sponsorsPreference = res;
+        this.engageEveryone(sponsorsPreference, societiesPreference)
     });
+  });
+}
+engageEveryone(sponsorsPreference, societiesPreference) {
+  var societyPreference : any = {};
+  var sponsorPreference : any = {};
+  var done;
+  do {
+    done = true;
+    for (var i = 0; i < societiesPreference.length; i++) {
+      societyPreference = societiesPreference[i];
+      var listIndex = 0;
+      if(societyPreference.bestMatch) {
+        done = false;
+        //going through a selected society's own preference list of sponsors
+        if (listIndex < societyPreference['preferenceList'].length) {
+          var sponsorId = societyPreference['preferenceList'][listIndex].sponsor;
+          listIndex++;
+
+          //going through sponsorsPreference to find the selected sponsor's details such as their best match
+          for (i = 0; i < sponsorsPreference.length; i++) {
+            if(sponsorsPreference[i].sponsor === sponsorId)
+              sponsorPreference = sponsorsPreference[i];
+          }
+          if(!sponsorPreference.bestMatch || prefers(sponsorPreference, societyPreference)) {
+            engage(sponsorPreference, societyPreference);
+          }
+        }
+      }
+    }
+  } while (!done);
+
+  //returns true if the given user is preferred over the current bestMatch
+  function prefers (user, societyPreference) {
+    return rank(user, societyPreference['preferenceList']) < rank(societyPreference.bestMatch, societyPreference['preferenceList']);
   }
 
-  ngOnInit() {
+  //returns the rank of a user in the list 
+  function rank (user, preferenceList) {
+    for (var i = 0; i < preferenceList.length; i++) {
+      if (preferenceList[i] === user)
+        return i;
+    }
+    return preferenceList.length + 1;
+  }
+
+  function engage(sponsorPreference, societyPreference) {
+    if(sponsorPreference.bestMatch) {
+      for (var i = 0; i < societiesPreference.length; i++) {
+        if (societiesPreference.society === sponsorPreference.bestMatch)
+          societiesPreference.society = null;
+      }
+      sponsorPreference.bestMatch = societyPreference.society; 
+    }
+    if (societyPreference.bestMatch) {
+      for (var i = 0; i < sponsorsPreference.length; i++) {
+        if (sponsorsPreference.sponsor === societyPreference.bestMatch)
+          sponsorsPreference.sponsor = null;
+      }
+      societyPreference.bestMatch = sponsorPreference.sponsor;
+    }
+  }
+}
+
+ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params.id;
       this.sponsorService.getSocietiesById(this.id).subscribe(res => {
         this.society = res;
-        this.profileSocietyForm.get('name').setValue(this.society.name);
-        this.profileSocietyForm.get('about').setValue(this.society.about);
-        this.contactType = this.society.contactType;
-        this.profileSocietyForm.get('contact').setValue(this.society.contact);
-        this.profileSocietyForm.get('money').setValue(this.society.money);
-        this.profileSocietyForm.get('moneyCounter').setValue(this.society.moneyCounter);
-        this.discount = this.society.discount;
-        this.profileSocietyForm.get('dealsCounter').setValue(this.society.dealsCounter);
-        this.deals = this.society.deals;
-        this.profileSocietyForm.get('discountCounter').setValue(this.society.discountCounter);
-        this.promotionWant = this.society.promotionWant;
-        this.profileSocietyForm.get('promotionWantCounter').setValue(this.society.promotionWantCounter);
-        this.profileSocietyForm.get('size').setValue(this.society.size);
-        this.profileSocietyForm.get('socials').setValue(this.society.socials);
-        this.publicity = this.society.publicity;
-        this.promotionOffer = this.society.promotionOffer;
-        this.useServices = this.society.useServices;
-        this.additional = this.society.additional; 
-
-        if(this.society.moneyCounter > 0) {
-          this.profileSocietyForm.get('moneyCounter').enable();
-        }
-        if(this.society.discountCounter > 0) {
-          this.profileSocietyForm.get('discountsCounter').enable();
-        }
-        if(this.society.dealsCounter > 0) {
-          this.profileSocietyForm.get('dealsCounter').enable();
-        }
-        if(this.society.promotionWantCounter > 0) {
-          this.profileSocietyForm.get('promotionWantCounter').enable();
-        }
+        this.name = this.society.name;
+        this.contact = this.society.contact;
+        this.about = this.society.about; 
+        this.updateWantsTable(this.society);
+        this.updateOffersTable(this.society);
+        this.wantsTable.renderRows();
+        this.offersTable.renderRows();
       });
     });
   }

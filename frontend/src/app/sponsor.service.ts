@@ -5,12 +5,13 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class SponsorService {
+  /* My modified code starts here */
 
   uri = 'http://localhost:3000/SponsorApp';
 
   constructor(private http: HttpClient) {
     }
-
+ 
   getSponsors() {
     return this.http.get(`${this.uri}/sponsors`);
   }
@@ -25,6 +26,46 @@ export class SponsorService {
   
   getSocietiesById(id) {
     return this.http.get(`${this.uri}/societies/${id}`);
+  }
+
+  getSponsorPreference() {
+    return this.http.get(`${this.uri}/sponsorPreference`);
+  }
+
+  getSocietyPreference() {
+    return this.http.get(`${this.uri}/societyPreference`);
+  }
+  
+  getSocietyPreferenceById(id) {
+    return this.http.get(`${this.uri}/societyPreference/${id}`);
+  }
+
+  getSponsorPreferenceBySponsor(sponsor) {
+    return this.http.get(`${this.uri}/sponsorPreference/sponsor/${sponsor}`, sponsor);
+  }
+
+  getSocietyPreferenceBySociety(society) {
+    return this.http.get(`${this.uri}/societyPreference/society/${society}`, society);
+  }
+
+  addSponsorPreference(sponsor, preferenceList) {
+
+    const sponsorPreference = {
+      sponsor : sponsor,
+      preferenceList : preferenceList
+    };
+
+    return this.http.post(`${this.uri}/sponsorPreference/add`, sponsorPreference);
+  }
+
+  addSocietyPreference(society, preferenceList) {
+
+    const societyPreference = {
+      society : society,
+      preferenceList : preferenceList
+    };
+
+    return this.http.post(`${this.uri}/societyPreference/add`, societyPreference);
   }
 
   addSponsor(name, about, contactType, contact, size, sizeCounter, socials, socialsCounter, publicity, publicityCounter, promotionWant, promotionWantCounter, useServices, useServicesCounter, additional, additionalCounter, money, discount, deals, promotionOffer) {
@@ -135,7 +176,40 @@ export class SponsorService {
     return this.http.post(`${this.uri}/societies/edit/${id}`, society);
   }
 
-  //TODO
+  editSocietyPreference(societyId, bestMatch, preferenceList) {
+    const societyPreference = {
+      society: societyId,
+      bestMatch: bestMatch,
+      preferenceList: preferenceList
+    };
+    return this.http.post(`${this.uri}/societyPreference/edit`, societyPreference);
+  }
+
+  editSponsorPreference(sponsorId, bestMatch, preferenceList) {
+    const sponsorPreference = {
+      sponsor: sponsorId,
+      bestMatch: bestMatch,
+      preferenceList: preferenceList
+    };
+    return this.http.post(`${this.uri}/sponsorPreference/edit`, sponsorPreference);
+  }
+
+  editSocietyPreferenceBestMatch(society, bestMatch){
+    const societyPreference = {
+      society: society,
+      bestMatch: bestMatch
+    }
+    return this.http.post(`${this.uri}/societyPreference/editBestMatch`, societyPreference);
+  }
+
+  editSponsorPreferenceBestMatch(sponsor, bestMatch){
+    const sponsorPreference = {
+      sponsor : sponsor,
+      bestMatch : bestMatch
+    }
+    return this.http.post(`${this.uri}/sponsorPreference/editBestMatch`, sponsorPreference);
+  }
+
   loginCheck(name, password) {
     return this.http.get(`${this.uri}/societies/${name}`);
   }

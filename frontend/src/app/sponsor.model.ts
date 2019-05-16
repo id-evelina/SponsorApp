@@ -1,4 +1,5 @@
 export interface Sponsor {
+    /* My modified code starts here */
     id: String;
     name: String;
     about: String;

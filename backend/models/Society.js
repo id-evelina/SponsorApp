@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 let Society = new Schema({
 
-    //_id: mongoose.Schema.Types.ObjectId,
+    /* My modified code starts here */
     email: {
         type: String
     },
