@@ -42,12 +42,12 @@
         <br>
   
         <mat-form-field class="mat-wrapper">
-          <input matInput placeholder="Approximate number of members you wish the society to have" (change)="changedSizeCounter(sizeCounter, size.value)" formControlName="size" #size onkeypress="return event.charCode >= 48" >
+          <input matInput placeholder="Approximate number of members you wish the society to have" appNumbersOnly (change)="changedSizeCounter(sizeCounter, size.value)" formControlName="size" #size onkeypress="return event.charCode >= 48" >
         </mat-form-field>
         <br><br>
   
         <mat-form-field class="mat-wrapper">
-            <input matInput placeholder="Approximate number of socials you wish the society to hold at your venue (0 if N/A)" (change)="changedSocials(socialsCounter, socials.value)" formControlName="socials" #socials onkeypress="return event.charCode >= 48" >
+            <input matInput placeholder="Approximate number of socials you wish the society to hold at your venue (0 if N/A)" appNumbersOnly (change)="changedSocials(socialsCounter, socials.value)" formControlName="socials" #socials onkeypress="return event.charCode >= 48" >
         </mat-form-field>
         <br><br>
   
@@ -75,32 +75,32 @@
   
         <mat-form-field >
           <mat-label> Size counter</mat-label>
-          <input matInput type="number" formControlName="sizeCounter" #sizeCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+          <input matInput type="number" formControlName="sizeCounter" #sizeCounter class="counters" appNumbersOnly min="0" max="10" >
         </mat-form-field>
         <br> <br>
         <mat-form-field>
           <mat-label> Socials counter</mat-label>
-          <input matInput type="number" formControlName="socialsCounter" #socialsCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+          <input matInput type="number" formControlName="socialsCounter" #socialsCounter class="counters" appNumbersOnly min="0" max="10" >
         </mat-form-field>
         <br> <br>
         <mat-form-field>
           <mat-label> Publicity counter</mat-label>
-          <input matInput type="number" formControlName="publicityCounter"  #publicityCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+          <input matInput type="number" formControlName="publicityCounter"  #publicityCounter class="counters" appNumbersOnly min="0" max="10" >
         </mat-form-field>
         <br> <br>
         <mat-form-field>
           <mat-label> Promotion counter</mat-label>
-          <input matInput type="number" formControlName="promotionWantCounter" #promotionWantCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+          <input matInput type="number" formControlName="promotionWantCounter" #promotionWantCounter class="counters" appNumbersOnly min="0" max="10" >
         </mat-form-field>
         <br> <br>
         <mat-form-field>
           <mat-label> Services counter</mat-label>
-          <input matInput type="number" formControlName="useServicesCounter" #useServicesCounter  class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+          <input matInput type="number" formControlName="useServicesCounter" #useServicesCounter  class="counters" appNumbersOnly min="0" max="10" >
         </mat-form-field>
         <br> <br>
         <mat-form-field>
           <mat-label> Additional counter</mat-label>
-          <input matInput type="number" formControlName="additionalCounter" #additionalCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+          <input matInput type="number" formControlName="additionalCounter" #additionalCounter class="counters" appNumbersOnly min="0" max="10" >
         </mat-form-field>
   
   
@@ -112,7 +112,6 @@
             Number of points must be equal to 10
         </mat-error>  
         <br>
-    
   
         <mat-divider class="mat-divider-big"></mat-divider>
         <br><br>
@@ -123,7 +122,7 @@
         <br>
   
           <mat-form-field class="mat-wrapper">
-            <input matInput placeholder="Approximate sum of funding you would be willing to offer" formControlName="money" #money onkeypress="return event.charCode >= 48">
+            <input matInput placeholder="Approximate sum of funding you would be willing to offer" appNumbersOnly formControlName="money" #money onkeypress="return event.charCode >= 48">
         </mat-form-field>
         <br><br>
   
@@ -140,7 +139,7 @@
   
         <p class="text-center">
         <button class="buttons" type="submit" (click)="editSponsor(name.value, about.value, contactType, contact.value, 
-          size.value, sizeCounter.value, socials.value, socialsCounter.value, publicity, publicityCounter.value, promotionWant, promotionWantCounter.value, useServices, useServicesCounter.value, additional, additionalCounter.value, money.value, discount , deals, promotionOffer)" [disabled]="profileSponsorForm.invalid" mat-raised-button color="primary">Update details</button>      
+          size.value, sizeCounter.value, socials.value, socialsCounter.value, publicity, publicityCounter.value, promotionWant, promotionWantCounter.value, useServices, useServicesCounter.value, additional, additionalCounter.value, money.value, discount , deals, promotionOffer)" [disabled]="profileSponsorForm.pristine || profileSponsorForm.invalid"  mat-raised-button color="primary">Update details</button>      
         <button class="buttons" type="submit" mat-raised-button (click)="back()">Go back</button>
         </p>
       </form>

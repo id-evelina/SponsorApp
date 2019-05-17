@@ -25,6 +25,7 @@ export class MatchesSponsorComponent implements OnInit {
   constructor(private sponsorService: SponsorService, private router: Router, private route: ActivatedRoute) {  }
 
   updateTable (sponsorPreference) {
+    if(sponsorPreference['bestMatch']) {
     for (var i = 0; i < sponsorPreference['preferenceList'].length; i++) {
       if(sponsorPreference['preferenceList'][i].society == sponsorPreference.bestMatch) {
         this.gatherSocietyData(sponsorPreference['preferenceList'], i);
@@ -36,6 +37,12 @@ export class MatchesSponsorComponent implements OnInit {
           }
         }
       }
+    }
+    } else {
+    document.getElementById("matchExists").style.display = "none";
+    document.getElementById("noMatch").style.display = "block";
+    for(var j = 0; j < 5; j++)
+      this.gatherSocietyData(sponsorPreference['preferenceList'], j);
     }
   }
 
@@ -64,7 +71,10 @@ export class MatchesSponsorComponent implements OnInit {
         if (preferenceList[i].notMatch[j] === "additional")
           this.wants += "Additional services; ";
         }
-      var societyPush = {number: this.number, name: this.society.name, contact: this.society.contact, about: this.society.about, wants: this.wants, offers: this.offers,score: preferenceList[i].matchScore};
+        var score : any;
+        score = +preferenceList[i].matchScore;
+        score = score.toFixed(2);
+      var societyPush = {number: this.number, name: this.society.name, contact: this.society.contact, about: this.society.about, wants: this.wants, offers: this.offers,score: score};
       this.societies.push(societyPush);
       this.number++;
      

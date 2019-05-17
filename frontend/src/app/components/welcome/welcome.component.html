@@ -6,16 +6,11 @@
           <h3>New? Sign up to register</h3>
         </section>
         <form [formGroup]="registerForm">
-
-           
-
           <mat-form-field class="mat-wrapper">
             <input matInput placeholder="E-mail" formControlName="emailRegister" #emailRegister>
             <mat-error *ngIf="registerForm.hasError('required', 'emailRegister')"> E-mail is required</mat-error>
             <mat-error *ngIf="registerForm.hasError('email', 'emailRegister')">Enter a valid e-mail address</mat-error>
           </mat-form-field>
-
-          
           <br>
 
           <mat-form-field class="mat-wrapper">
@@ -41,7 +36,6 @@
 
           <label id="account-label">Select what type of account you want</label>
           <mat-radio-group aria-labelledby="account-label" [(ngModel)]="accountSelected" [ngModelOptions]="{standalone: true}" class="radio-group">
-            
             <mat-radio-button value="Sponsor" class="radio-button">Sponsor</mat-radio-button>
             <mat-radio-button value="Society" class="radio-button">Society</mat-radio-button>
           </mat-radio-group>
@@ -49,10 +43,7 @@
           <p class="text-center"> 
           <button (click)="changeView(accountSelected)" [disabled]="registerForm.pristine || registerForm.invalid" mat-raised-button color="primary" >Sign Up</button>
           </p>
-       
-
-
-      </form>
+        </form>
       </mat-card>
     </mat-grid-tile>
     <mat-grid-tile>
@@ -93,9 +84,10 @@
     <section class="mat-typography" >
       <h3 class="heading-style">Tell us about your company </h3>
     </section>
-    <br><br>
+    <br>
+
     <form [formGroup]="addSponsorForm" >
-           
+    <mat-card>       
       <mat-form-field class="mat-wrapper">
         <input matInput placeholder="Name of your company" formControlName="name" #name>
       </mat-form-field>
@@ -108,7 +100,7 @@
 
       <label id="contactTypeSponsor">Select the way you prefer to be contacted</label>
       <mat-radio-group aria-labelledby="contactTypeSponsor" [(ngModel)]="contactTypeSponsor" [ngModelOptions]="{standalone: true}" #contactType class="radio-group">
-        <mat-radio-button value="email" class="radio-button">E-mail</mat-radio-button><br><br>
+        <mat-radio-button value="email" class="radio-button">E-mail</mat-radio-button>
         <mat-radio-button value="phone" class="radio-button">Phone number</mat-radio-button> 
       </mat-radio-group>
       <br>
@@ -116,22 +108,24 @@
       <mat-form-field class="mat-wrapper">
         <input matInput placeholder="Enter your contact details" formControlName="contact" #contact>
       </mat-form-field>
-      <br><br>
-      <mat-divider class="mat-divider-big"></mat-divider>
-      <br><br>
+    </mat-card>
+    <br><br>
+    <mat-divider class="mat-divider-big"></mat-divider>
+    <br><br>
 
-      <section class="mat-typography">
-          <h3 class="heading-style">Tell us what you want from a society</h3>
-      </section>
-      <br>
+    <section class="mat-typography">
+        <h3 class="heading-style">Tell us what you want from a society</h3>
+    </section>
+    <br>
+    <mat-card>
 
       <mat-form-field class="mat-wrapper">
-        <input matInput placeholder="Approximate number of members you wish the society to have" (change)="changedSocials(sizeCounter, size.value)" formControlName="size" #size onkeypress="return event.charCode >= 48" >
+        <input matInput placeholder="Approximate number of members you wish the society to have" appNumbersOnly (change)="changedSocials(sizeCounter, size.value)" formControlName="size" #size onkeypress="return event.charCode >= 48" >
       </mat-form-field>
       <br><br>
 
       <mat-form-field class="mat-wrapper">
-          <input matInput placeholder="Approximate number of socials you wish the society to hold at your venue (0 if N/A)" (change)="changedSocials(socialsCounter, socials.value)" formControlName="socials" #socials onkeypress="return event.charCode >= 48" >
+          <input matInput placeholder="Approximate number of socials you wish the society to hold at your venue (0 if N/A)" appNumbersOnly (change)="changedSocials(socialsCounter, socials.value)" formControlName="socials" #socials onkeypress="return event.charCode >= 48" >
       </mat-form-field>
       <br><br>
 
@@ -145,45 +139,53 @@
       <br><br>
 
       <mat-slide-toggle [(ngModel)]="additional" [ngModelOptions]="{standalone: true}" (change)="changedAdditional(additionalCounter)" class="mat-wrapper" color="primary" >Choose if you want any other additional benefits from the society (e.g. free tickets to events)</mat-slide-toggle>
-      <br><br>
-      <mat-divider class="mat-divider-big"></mat-divider>
-      <br><br>
+    </mat-card> 
+    <br><br>
+    <mat-divider class="mat-divider-big"></mat-divider>
+    <br><br>
 
+    <section class="mat-typography">
+      <h3 class="heading-style">Please rank how important each category is for you</h3>
+    </section>
+    <mat-card>
       <section class="mat-typography">
-          <h3 class="heading-style">Please rank how important each category is for you</h3>
-          <h4> You are given 10 points to allocate throughout all categories. You must use all 10 points. The amount of points given to a category equals the level of importance that category has for you.</h4>
-          <h4> Total points selected: {{calculatePointsSponsor(sizeCounter.value, socialsCounter.value, publicityCounter.value, promotionSponsorCounter.value, useServicesCounter.value, additionalCounter.value)}} </h4>
-
+        <h4> You are given 10 points to allocate throughout all categories. You must use all 10 points. The amount of points given to a category equals the level of importance that category has for you.</h4>
+        <h4> Total points selected: {{calculatePointsSponsor(sizeCounter.value, socialsCounter.value, publicityCounter.value, promotionSponsorCounter.value, useServicesCounter.value, additionalCounter.value)}} </h4>    
       </section>
-
+    
       <mat-form-field >
         <mat-label> Size counter</mat-label>
-        <input matInput type="number" id="sizeCounter" formControlName="sizeCounter" #sizeCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" id="sizeCounter" formControlName="sizeCounter" #sizeCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
+
       <mat-form-field>
         <mat-label> Socials counter</mat-label>
-        <input matInput type="number" formControlName="socialsCounter" #socialsCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="socialsCounter" #socialsCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
+
       <mat-form-field>
         <mat-label> Publicity counter</mat-label>
-        <input matInput type="number" formControlName="publicityCounter"  #publicityCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="publicityCounter"  #publicityCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
+
       <mat-form-field>
         <mat-label> Promotion counter</mat-label>
-        <input matInput type="number" formControlName="promotionSponsorCounter" #promotionSponsorCounter class="text-center" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="promotionSponsorCounter" #promotionSponsorCounter class="text-center" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
+
       <mat-form-field>
         <mat-label> Services counter</mat-label>
-        <input matInput type="number" formControlName="useServicesCounter" #useServicesCounter  class="text-center" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="useServicesCounter" #useServicesCounter  class="text-center" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
+
       <mat-form-field>
         <mat-label> Additional counter</mat-label>
-        <input matInput type="number" formControlName="additionalCounter" #additionalCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="additionalCounter" #additionalCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
 
       <mat-error *ngIf="addSponsorForm.hasError('maxNumbers')"> 
@@ -192,20 +194,21 @@
 
       <mat-error *ngIf="addSponsorForm.hasError('morePoints')"> 
           Number of points must be equal to 10
-      </mat-error>  
-      <br>
+      </mat-error> 
+    </mat-card>
+    <br>
+    <mat-divider class="mat-divider-big"></mat-divider>
+    <br><br>
 
-      <mat-divider class="mat-divider-big"></mat-divider>
-      <br><br>
+    <section class="mat-typography">
+      <h3 class="heading-style">Tell us what you can offer to societies</h3>
+    </section>
+    <br>
 
-      <section class="mat-typography">
-          <h3 class="heading-style">Tell us what you can offer to societies</h3>
-      </section>
-      <br>
-
-        <mat-form-field class="mat-wrapper">
-          <input matInput placeholder="Approximate sum of funding you would be willing to offer" formControlName="money" #money onkeypress="return event.charCode >= 48" >
-          <span matPrefix>£&nbsp;</span>
+    <mat-card>
+      <mat-form-field class="mat-wrapper">
+        <input matInput placeholder="Approximate sum of funding you would be willing to offer" appNumbersOnly formControlName="money" #money onkeypress="return event.charCode >= 48" >
+        <span matPrefix>£&nbsp;</span>
       </mat-form-field>
       <br><br>
 
@@ -216,15 +219,14 @@
       <br><br>
       
       <mat-slide-toggle [(ngModel)]="promotionOffer" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you are willing to offer promotion for the society</mat-slide-toggle>
-      <br><br>
-      <mat-divider class="mat-divider-big"></mat-divider>
-      <br><br>
+    </mat-card>
+    <br><br>
 
-      <p class="text-center">
+    <p class="text-center">
       <button class="button" type="submit" (click)="addSponsor(name.value, about.value, contactTypeSponsor, contact.value, 
-      size.value, sizeCounter.value, socials.value, socialsCounter.value, publicity, publicityCounter.value, promotionWant, promotionSponsorCounter.value, useServices, useServicesCounter.value, additional, additionalCounter.value, money.value, discount , deals, promotionOffer)"  mat-raised-button color="primary">Save your details</button>
+      size.value, sizeCounter.value, socials.value, socialsCounter.value, publicity, publicityCounter.value, promotionWant, promotionSponsorCounter.value, useServices, useServicesCounter.value, additional, additionalCounter.value, money.value, discount , deals, promotionOffer)"  [disabled]="addSponsorForm.pristine || addSponsorForm.invalid"  mat-raised-button color="primary">Save your details</button>
       <button class="button" type="submit" (click)="back()" mat-raised-button >Go back</button>
-      </p>
+    </p>
     </form>
   </mat-card>
 </div>
@@ -240,22 +242,23 @@
     <section class="mat-typography" >
       <h3 class="heading-style">Tell us about your society </h3>
     </section>
-    <br><br>
+    <br>
+
     <form [formGroup]="addSocietyForm">
-           
+    <mat-card>      
       <mat-form-field class="mat-wrapper">
         <input matInput placeholder="Name of your society" formControlName="nameSociety" #nameSociety>
       </mat-form-field>
       <br><br> 
 
       <mat-form-field class="mat-wrapper">
-        <textarea matInput placeholder="Please share some information about your societies to make FIX" formControlName="aboutSociety" #aboutSociety cols="40" rows="5"></textarea>
+        <textarea matInput placeholder="Please share some information about your societies and any additional services you might offer" formControlName="aboutSociety" #aboutSociety cols="40" rows="5"></textarea>
       </mat-form-field>
       <br><br>
 
       <label id="contactTypeSociety">Select the way you prefer to be contacted</label>
       <mat-radio-group aria-labelledby="contactTypeSociety" [(ngModel)]="contactTypeSociety" [ngModelOptions]="{standalone: true}" #contactType class="radio-group">
-        <mat-radio-button value="email" class="radio-button">E-mail</mat-radio-button><br><br>
+        <mat-radio-button value="email" class="radio-button">E-mail</mat-radio-button>
         <mat-radio-button value="phone" class="radio-button">Phone number</mat-radio-button> 
       </mat-radio-group>
       <br>
@@ -263,17 +266,18 @@
       <mat-form-field class="mat-wrapper">
         <input matInput placeholder="Enter your contact details" formControlName="contactSociety" #contactSociety>
       </mat-form-field>
-      <br><br>
-      <mat-divider class="mat-divider-big"></mat-divider>
-      <br><br>
+    </mat-card>
+    <br><br>
+    <mat-divider class="mat-divider-big"></mat-divider>
+    <br><br>
 
-      <section class="mat-typography">
-          <h3 class="heading-style">Tell us what you want from a sponsor</h3>
-      </section>
-      <br>
-
+    <section class="mat-typography">
+      <h3 class="heading-style">Tell us what you want from a sponsor</h3>
+    </section>
+    <br>
+    <mat-card>
       <mat-form-field class="mat-wrapper">
-          <input matInput placeholder="Enter the sum of funding you would want from the sponsor" formControlName="moneySociety" (change)="changedMoney(moneyCounter, moneySociety.value)" #moneySociety onkeypress="return event.charCode >= 48" >
+        <input matInput placeholder="Enter the sum of funding you would want from the sponsor" appNumbersOnly formControlName="moneySociety" (change)="changedMoney(moneyCounter, moneySociety.value)" #moneySociety onkeypress="return event.charCode >= 48" >
       </mat-form-field>
       <br><br>
 
@@ -284,36 +288,41 @@
       <br><br>
       
       <mat-slide-toggle [(ngModel)]="promotionWantSociety" [ngModelOptions]="{standalone: true}" class="mat-wrapper" (change)="changedPromotionSociety(promotionSocietyCounter)" color="primary" >Choose if you are interested in any form of promotion offered by the sponsor</mat-slide-toggle>
-      <br><br>
-      <mat-divider class="mat-divider-big"></mat-divider>
-      <br><br>
-
+    </mat-card>
+    <br><br>
+    <mat-divider class="mat-divider-big"></mat-divider>
+    <br><br>
+    <section class="mat-typography">
+      <h3 class="heading-style">Please rank how important each category is for you</h3>    
+    </section> 
+      
+    <mat-card>
       <section class="mat-typography">
-          <h3 class="heading-style">Please rank how important each category is for you</h3>
-          <h4> You are given 10 points to allocate throughout all categories. You must use all 10 points. The amount of points given to a category equals the level of importance that category has for you.</h4>
-          <h4> Total points selected: {{calculatePointsSociety(moneyCounter.value, dealsCounter.value, discountCounter.value, promotionSocietyCounter.value)}} </h4>
-      </section>  
+        <h4> You are given 10 points to allocate throughout all categories. You must use all 10 points. The amount of points given to a category equals the level of importance that category has for you.
+        <br>Total points selected: {{calculatePointsSociety(moneyCounter.value, dealsCounter.value, discountCounter.value, promotionSocietyCounter.value)}} </h4>
+      </section> 
 
       <mat-form-field >
         <mat-label> Money counter</mat-label>
-        <input matInput type="number" formControlName="moneyCounter" #moneyCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="moneyCounter" #moneyCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
+
       <mat-form-field>
         <mat-label> Discount counter</mat-label>
-        <input matInput type="number" formControlName="discountCounter" #discountCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="discountCounter" #discountCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
       <mat-form-field>
         <mat-label> Deals counter</mat-label>
-        <input matInput type="number" formControlName="dealsCounter"  #dealsCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="dealsCounter"  #dealsCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
       <mat-form-field>
         <mat-label> Promotion counter</mat-label>
-        <input matInput type="number" formControlName="promotionSocietyCounter" #promotionSocietyCounter class="counters" onkeypress="return event.charCode >= 48" min="0" max="10" >
+        <input matInput type="number" formControlName="promotionSocietyCounter" #promotionSocietyCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
-      <br> <br>
+      <br><br>
 
       <mat-error *ngIf="addSocietyForm.hasError('maxNumbers')"> 
         Maximum number of points reached
@@ -322,23 +331,24 @@
       <mat-error *ngIf="addSocietyForm.hasError('morePoints')"> 
           Number of points must be equal to 10
       </mat-error>  
-      <br>
+    </mat-card>
+    <br>
+    <mat-divider class="mat-divider-big"></mat-divider>
+    <br><br>
 
-      <mat-divider class="mat-divider-big"></mat-divider>
-      <br><br>
+    <section class="mat-typography">
+      <h3 class="heading-style">Tell us what you can offer to sponsors</h3>
+    </section>
+    <br>
 
-      <section class="mat-typography">
-          <h3 class="heading-style">Tell us what you can offer to sponsors</h3>
-      </section>
-      <br>
-
+    <mat-card>
       <mat-form-field class="mat-wrapper">
-          <input matInput placeholder="Approximate number of members in your society" formControlName="sizeSociety" #sizeSociety onkeypress="return event.charCode >= 48" >
+        <input matInput placeholder="Approximate number of members in your society" appNumbersOnly formControlName="sizeSociety" #sizeSociety onkeypress="return event.charCode >= 48" >
       </mat-form-field>
       <br><br>
 
       <mat-form-field class="mat-wrapper">
-          <input matInput placeholder="Approximate number of socials you would be willing to do at the sponsor's venue (if none - put 0)" formControlName="socialsSociety" #socialsSociety onkeypress="return event.charCode >= 48" >
+          <input matInput placeholder="Approximate number of socials you would be willing to do at the sponsor's venue (if none - put 0)" appNumbersOnly formControlName="socialsSociety" #socialsSociety onkeypress="return event.charCode >= 48" >
       </mat-form-field>
       <br><br>
 
@@ -352,11 +362,12 @@
       <br><br>
 
       <mat-slide-toggle [(ngModel)]="additionalSociety" [ngModelOptions]="{standalone: true}" class="mat-wrapper" color="primary" >Choose if you have any other additional ways to provide to the sponsor (e.g. free tickets to events)</mat-slide-toggle>
-      <br><br>
-      <p class="text-center">
-      <button class="button" type="submit" (click)="addSociety(nameSociety.value, aboutSociety.value, contactTypeSociety, contactSociety.value, moneySociety.value, moneyCounter.value, discountSociety, discountCounter.value, dealsSociety, dealsCounter.value, promotionWantSociety, promotionSocietyCounter.value, sizeSociety.value, socialsSociety.value, publicitySociety, promotionOfferSociety, useServicesSociety, additionalSociety)"  mat-raised-button color="primary">Save your details</button>
+    </mat-card>
+    <br><br>
+    <p class="text-center">
+      <button class="button" type="submit" (click)="addSociety(nameSociety.value, aboutSociety.value, contactTypeSociety, contactSociety.value, moneySociety.value, moneyCounter.value, discountSociety, discountCounter.value, dealsSociety, dealsCounter.value, promotionWantSociety, promotionSocietyCounter.value, sizeSociety.value, socialsSociety.value, publicitySociety, promotionOfferSociety, useServicesSociety, additionalSociety)" [disabled]="addSocietyForm.pristine || addSocietyForm.invalid"  mat-raised-button color="primary">Save your details</button>
       <button class="button" type="submit" (click)="back()" mat-raised-button >Go back</button>
-      </p>
+    </p>
     </form>
   </mat-card>
 </div>

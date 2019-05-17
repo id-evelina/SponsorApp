@@ -19,6 +19,7 @@ import { MatchesSocietyComponent } from './components/matches-society/matches-so
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { EditSocietyComponent } from './components/edit-society/edit-society.component';
 import { EditSponsorComponent } from './components/edit-sponsor/edit-sponsor.component';
+import { NumbersOnlyDirective } from './numbers-only.directive';
 
 const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
@@ -40,7 +41,8 @@ const routes: Routes = [
     MatchesSocietyComponent,
     WelcomeComponent,
     EditSocietyComponent,
-    EditSponsorComponent
+    EditSponsorComponent,
+    NumbersOnlyDirective
   ],
   imports: [
     BrowserModule,

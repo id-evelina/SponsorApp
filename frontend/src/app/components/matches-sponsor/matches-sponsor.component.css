@@ -6,3 +6,8 @@ table {
 .button{
     margin-left :50px;
 }
+
+mat-cell, .mat-cell {
+    
+    padding: 12px 16px 12px 0;
+  }

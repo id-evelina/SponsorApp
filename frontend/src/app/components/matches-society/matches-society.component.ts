@@ -26,18 +26,25 @@ export class MatchesSocietyComponent implements OnInit {
   constructor(private sponsorService: SponsorService, private router: Router, private route: ActivatedRoute) {    }
 
   updateTable (societyPreference) {
-    for (var i = 0; i < societyPreference['preferenceList'].length; i++) {
-      if(societyPreference['preferenceList'][i].sponsor == societyPreference.bestMatch) {
-        this.gatherSponsorData(societyPreference['preferenceList'], i);
-        var k = 0;
-          
-        for(var j = 0; j < societyPreference['preferenceList'].length; j++) {
-          if (i != j && k < 4) {
-            this.gatherSponsorData(societyPreference['preferenceList'], j);
-            k++;
+    if(societyPreference['bestMatch']) {
+      for (var i = 0; i < societyPreference['preferenceList'].length; i++) {
+        if(societyPreference['preferenceList'][i].sponsor == societyPreference.bestMatch) {
+          this.gatherSponsorData(societyPreference['preferenceList'], i);
+          var k = 0;
+            
+          for(var j = 0; j < societyPreference['preferenceList'].length; j++) {
+            if (i != j && k < 4) {
+              this.gatherSponsorData(societyPreference['preferenceList'], j);
+              k++;
+            }
           }
         }
       }
+    } else {
+      document.getElementById("matchExists").style.display = "none";
+      document.getElementById("noMatch").style.display = "block";
+      for(var j = 0; j < 5; j++)
+        this.gatherSponsorData(societyPreference['preferenceList'], j);
     }
   }
 
@@ -66,7 +73,10 @@ export class MatchesSocietyComponent implements OnInit {
         if (preferenceList[i].notMatch[j] === "additional")
           this.offers += "Additional services; ";
         }
-      var sponsorPush = {number: this.number, name: this.sponsor.name, contact: this.sponsor.contact, about: this.sponsor.about, wants: this.wants, offers: this.offers,score: preferenceList[i].matchScore};
+      var score : any;
+      score = +preferenceList[i].matchScore;
+      score = score.toFixed(2);
+      var sponsorPush = {number: this.number, name: this.sponsor.name, contact: this.sponsor.contact, about: this.sponsor.about, wants: this.wants, offers: this.offers,score: score};
       this.sponsors.push(sponsorPush);
       this.number++;
 

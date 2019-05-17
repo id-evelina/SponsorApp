@@ -1,10 +1,12 @@
 <div class="form">
   <mat-card class="text-center">
-  <section class="mat-typography" class="text-center">
+  <section class="mat-typography">
     <h2 class="text-center">These are potential sponsors available to sponsor your society who best match your wants and offers.</h2>
-    <h3>The results are ranked from highest to lowest. You and your first result are each other's best match based on all the information available in the system. <br>
-        The match score shows how compatible you and the sponsor are. The different columns are meant to show the areas in which you and the sponsor differ
+    <h3>The results are ranked based on the match score, which shows how compatible you and the sponsor are. The different columns show which areas you and the sponsor differ in
+      <div id="matchExists"> You and your first result are each other's best match, this is based on all the information available in the system. Sometimes your best match might not be the sponsor you have the highest score with as you might not have been their best match in return.</div>
+      <div id="noMatch" style= "display: none;" >You are currently no one's first match, try modifying what you offer and being more lenient on what you want to find more sponsors.</div>
     </h3>
+    <br>
   </section>
   <mat-divider></mat-divider>
   <br><br>
@@ -32,7 +34,7 @@
         <td mat-cell *matCellDef="let element"> {{element.wants}}</td>
       </ng-container>
       <ng-container matColumnDef="offers">
-        <th mat-header-cell *matHeaderCellDef>Categories the sponsor requires that you don't have</th>
+        <th mat-header-cell *matHeaderCellDef>Categories the sponsor requires that you don't have/don't match up to their requirements</th>
         <td mat-cell *matCellDef="let element"> {{element.offers}}</td>
       </ng-container>
       <ng-container matColumnDef="score">

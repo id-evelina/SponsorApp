@@ -5,8 +5,6 @@ import { FormControl, FormGroupDirective} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 
 import { SponsorService } from '../../sponsor.service';
-import { SponsorPreference } from '../../sponsorPreference.model';
-
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -119,6 +117,7 @@ export class WelcomeComponent implements OnInit {
     this.typeLoginPassword = !this.typeLoginPassword; 
   }
 
+  //checks that the points for categories equal 10
   countChecker(sf: FormGroup) { 
     let sum = 0;
 
@@ -133,6 +132,7 @@ export class WelcomeComponent implements OnInit {
     return sum < 10 ? {morePoints:true} : sum < 11 ? null : {maxNumbers : true}
   }
 
+  //checks that the points for categoties equal 10
   countCheckerSociety(sf: FormGroup) { 
     let sum = 0;
     let moneyCounter = sf.get("moneyCounter").value;
@@ -178,6 +178,8 @@ export class WelcomeComponent implements OnInit {
     });
   }
 
+  //switch to the required element based on what the user has selected
+  //e.g. if they want to make a sponsor account, show them the sponsir sign up form
   changeView(accountSelected) {
     if(!accountSelected.localeCompare("Sponsor")) {
       document.getElementById("registerSponsorDiv").style.display = "block";
@@ -190,6 +192,7 @@ export class WelcomeComponent implements OnInit {
     } 
   }
 
+  //goes back to the front page
   back() {
     document.getElementById("registerSponsorDiv").style.display = "none";
     document.getElementById("registerSocietyDiv").style.display = "none";
@@ -309,8 +312,6 @@ export class WelcomeComponent implements OnInit {
   calculateMatchScore(sponsor, society) {
     var sponsor = sponsor;
     var society = society;
-    console.log("society " + society['_id']);
-    console.log("sponsor " + sponsor['_id']);
 
     var societyScore = 0;
     var sponsorScore = 0;
@@ -361,8 +362,6 @@ export class WelcomeComponent implements OnInit {
     if(society['additional'] == sponsor['additional'] && sponsor['additional'] == true && society['additional'] == true) {
       sponsorScore += sponsor['additional'] * 5;
     }
-
-    console.log("the score returned at the calculation function " + (sponsorScore+societyScore))
     return (sponsorScore + societyScore);
   }
 
@@ -379,6 +378,7 @@ export class WelcomeComponent implements OnInit {
         preferenceList.reverse();
         this.addSocietytotheSponsorsPreferenceList(this.society, this.sponsors);
         this.sponsorService.addSocietyPreference(societyId, preferenceList).subscribe(() => {});
+        this.applyMarriage();
       });
     }); 
   }
@@ -396,6 +396,7 @@ export class WelcomeComponent implements OnInit {
         preferenceList.reverse();
         this.addSponsortotheSocietiesPreferenceList(this.sponsor, this.societies);
         this.sponsorService.addSponsorPreference(sponsorId, preferenceList).subscribe(() => {});
+        this.applyMarriage();
       });
     });
   }
@@ -445,7 +446,6 @@ export class WelcomeComponent implements OnInit {
     var notMatch = [];
     scoreMatch = this.calculateMatchScore(sponsor, society);
     notMatch = this.notMatch(sponsor, society);
-    console.log("the result of the match score " + scoreMatch);
     var preference = {sponsor : sponsor['_id'], matchScore : scoreMatch, notMatch : notMatch};
     return preference;
   }
@@ -504,6 +504,215 @@ export class WelcomeComponent implements OnInit {
       notMatch.push("additional");
     }
     return notMatch;
+  }
+
+  applyMarriage(){
+    var societiesPreference : any = [];
+    var sponsorsPreference : any = [];
+    var societies : any = [];
+    var sponsors : any = [];
+  
+    this.sponsorService.getSocietyPreference().subscribe(res => {
+      societiesPreference = res;
+      this.sponsorService.getSponsorPreference().subscribe( res => {
+        sponsorsPreference = res;
+        this.sponsorService.getSocieties().subscribe(res=> {
+          societies = res;
+          this.sponsorService.getSponsors().subscribe(res =>{
+            sponsors = res;
+            this.engageEveryone(sponsorsPreference, societiesPreference, societies, sponsors);
+          });
+        });
+      });
+    });
+  }
+          
+  engageEveryone(sponsorsPreference, societiesPreference, societies, sponsors) {
+  
+    var societyPreference : any = {};
+    var sponsorPreference : any = {};
+    var done;
+    var location = 0;
+  
+    var societyList;
+    var sponsorList;
+  
+    var societiesList :any = [];
+    var sponsorsList : any = [];
+  
+    //creating a list for societies that contains the society ID and their best match, will be used for the algorithm only
+    for (var i = 0; i < societies.length; i++) {
+      societiesList.push({society: societies[i]["_id"], bestMatch: null})
+    }
+  
+    //creating a list for sponsors that contains the sponsor ID and their best match, will be used for the algorithm only
+    for (var i = 0; i < sponsors.length; i++) {
+      sponsorsList.push({sponsor: sponsors[i]["_id"], bestMatch: null})
+    }
+  
+    var listIndex = 0;
+    if(sponsorsList.length < societiesList.length) {
+      do {
+        done = true;
+        for (var i = 0; i < sponsorsList.length; i++) {
+          //if the selected sponsor doesn't have a best match
+          if(!sponsorsList[i]['bestMatch']) {
+            done = false;
+  
+            //find the selected sponsor's preference information
+            for (var k = 0; k < sponsorsPreference.length; k++) {
+              if(sponsorsPreference[k]['sponsor'] == sponsorsList[i]['sponsor'])
+                sponsorPreference = sponsorsPreference[k];
+            }
+          
+            //proceed until done with the sponsor's preference list
+            if (listIndex < sponsorPreference['preferenceList'].length) {
+              //select a society from the sponsor's preference list
+              var societyId = sponsorPreference['preferenceList'][listIndex]["society"];
+              listIndex++;
+  
+              //iterate through the societies to find the selected society's preference list and info
+              for (var j = 0; j < societiesList.length; j++) {
+                if (societiesList[j]["society"] == societyId){
+                  societyList = societiesList[j];
+                  location = j;  
+                }
+                if (societiesPreference[j]["society"] == societyId) {
+                  societyPreference = societiesPreference[j];
+                }
+              }
+        
+              //proceed if the society doesn't have a best match OR the society prefers the current sponsor to their best match
+              if(!societyList['bestMatch'] || this.prefers(sponsorsList[i]["sponsor"], societyPreference, societyList['bestMatch'])) {   
+                    if(sponsorsList[i]['bestMatch']) {
+                      for (var j = 0; j < societiesList.length; j++) {
+                        if (societiesList[j]["society"] == sponsorsList[i]['bestMatch']){
+                          societiesList[j]['bestMatch'] = null;
+                        }
+                      }
+                    }
+                    //if the society has a best match sponsor already, make that sponsor's best match null (break off the marriage)
+                    if(societyList['bestMatch']) {
+                      for (var j = 0; j < sponsorsList.length; j++) {
+                        if (sponsorsList[j]["sponsor"] == societyList['bestMatch']){
+                          sponsorsList[j]['bestMatch'] = null;
+                        }
+                      }
+                    }
+                    //make the selected sponsor and society each others' best matches
+                    sponsorsList[i]['bestMatch'] = societyList['society'];
+                    societiesList[location]['bestMatch'] = sponsorsList[i]['sponsor'];
+              }
+            }
+          }   
+        } 
+      } while (!done);
+    } else {
+      do {
+        done = true;
+        for (var i = 0; i < societiesList.length; i++) {
+          //if the selected society doesn't have a best match
+          if(!societiesList[i]['bestMatch']) {
+            done = false;
+  
+            //find the selected society's preference information
+            for (var k = 0; k < societiesPreference.length; k++) {
+              if(societiesPreference[k]['society'] == societiesList[i]['society'])
+                societyPreference = societiesPreference[k];
+            }
+          
+            //proceed until done with the society's preference list
+            if (listIndex < societyPreference['preferenceList'].length) {
+              //select a sponsor from the society's preference list
+              var sponsorId = societyPreference['preferenceList'][listIndex]["sponsor"];
+              listIndex++;
+  
+              //iterate through the sponsors to find the selected sponsor's preference list and info
+              for (var j = 0; j < sponsorsList.length; j++) {
+                if (sponsorsList[j]["sponsor"] == sponsorId){
+                  sponsorList = sponsorsList[j];
+                  location = j;  
+                }
+                if (sponsorsPreference[j]["sponsor"] == sponsorId) {
+                  sponsorPreference = sponsorsPreference[j];
+                }
+              }
+        
+              //proceed if the sponsor doesn't have a best match OR the sponsor prefers the current society to their best match
+              if(!sponsorList['bestMatch'] || this.prefers(societiesList[i]["society"], sponsorPreference, sponsorList['bestMatch'])) {   
+                    if(societiesList[i]['bestMatch']) {
+                      for (var j = 0; j < sponsorsList.length; j++) {
+                        if (sponsorsList[j]["sponsor"] == societiesList[i]['bestMatch']){
+                          sponsorsList[j]['bestMatch'] = null;
+                        }
+                      }
+                    }
+                    //if the sponsor has a best match society already, make that society's best match null (break off the marriage)
+                    if(sponsorList['bestMatch']) {
+                      for (var j = 0; j < societiesList.length; j++) {
+                        if (societiesList[j]["society"] == sponsorList['bestMatch']){
+                          societiesList[j]['bestMatch'] = null;
+                        }
+                      }
+                    }
+                    //make the selected sponsor and society each others' best matches
+                    societiesList[i]['bestMatch'] = sponsorList["sponsor"];
+                    sponsorsList[location]['bestMatch'] = societiesList[i]['society'];
+              }
+            }
+          }   
+        } 
+      } while (!done);
+    }
+  
+  
+    //update the database with the new matches
+    for (var j = 0; j < sponsorsList.length; j++) {
+      this.updateSponsorPreferenceBestMatch(sponsorsList[j]['sponsor'], sponsorsList[j]['bestMatch']);
+    }
+  
+    for (var j = 0; j < societiesList.length; j++) {
+      this.updateSocietyPreferenceBestMatch(societiesList[j]['society'], societiesList[j]['bestMatch']); 
+    }
+    
+    /** Check whether the Stable Marriage algorithm has worked correctly**/
+    for (var i = 0; i < sponsorsList.length; i++){
+      for (var j = 0; j < societiesList.length; j++) {
+        for (var k = 0; k < sponsorsPreference.length; k++) {
+            if(sponsorsPreference[k]['sponsor'] == sponsorsList[i]['sponsor'])
+              sponsorPreference = sponsorsPreference[k];
+          }
+          for (var k = 0; k < societiesPreference.length; k++) {
+            if(societiesPreference[k]['society'] == societiesList[j]['sponsor'])
+              societyPreference = societiesPreference[k];
+          }
+          if (this.prefers(sponsorsList[i]["sponsor"], societyPreference, societiesList[j]['bestMatch'])  && this.prefers(societiesList[j]["ociety"], sponsorPreference, sponsorsList[i]['bestMatch']))
+              console.log("Stable marriage is not stable");
+        }
+      }
+      console.log("Stable Marriage Algorithm is stable");
+  }
+  
+  updateSocietyPreferenceBestMatch(society, bestMatch) {
+    this.sponsorService.editSocietyPreferenceBestMatch(society, bestMatch).subscribe(() => {});
+  }
+  
+  updateSponsorPreferenceBestMatch(sponsor, bestMatch) {
+    this.sponsorService.editSponsorPreferenceBestMatch(sponsor, bestMatch).subscribe(() => {});
+  }
+  
+  //returns the rank of a user in the list 
+  rank(user, preferenceList) {
+    for (var i = 0; i < preferenceList.length; i++) {
+      if (preferenceList[i] === user)
+        return i;
+    }
+    return preferenceList.length + 1;
+  }
+  
+  //returns true if the given user is preferred over the current bestMatch
+  prefers (user, preferenceList, bestMatch) {
+    return this.rank(user, preferenceList['preferenceList']) < this.rank(bestMatch, preferenceList['preferenceList']);
   }
 
   ngOnInit() {

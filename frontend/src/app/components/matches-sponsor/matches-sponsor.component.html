@@ -1,15 +1,16 @@
 <div class="form">
-  <mat-card>
-  <section class="mat-typography" class="text-center">
-    <h2 class="text-center">These are potential socities available for you to sponsor who best match your wants and offers.</h2>
-    <h3>The results are ranked from highest to lowest. You and your first result are each other's best match based on all the information available in the system. <br>
-        The match score shows how compatible you and the society are. The different columns are meant to show the areas in which you and the society differ
-    </h3>
-  </section>
-  <mat-divider></mat-divider>
-  <br><br>
+  <mat-card class="text-center">
+    <section class="mat-typography">
+      <h2 class="text-center">These are potential societies available to fund who best match your wants and offers.</h2>
+      <h3>The results are ranked based on the match score, which shows how compatible you and the society are. The different columns show which areas you and the societies differ in
+        <div id="matchExists"> You and your first result are each other's best match, this is based on all the information available in the system. Sometimes your best match might not be the society you have the highest score with as you might not have been their best match in return.</div>
+        <div id="noMatch" style= "display: none;" >You are currently no one's first match, try modifying what you offer and being more lenient on what you want to find more societies.</div>
+      </h3>
+    </section>
+    <mat-divider></mat-divider>
+    <br><br>
 
-  <mat-card>
+    <mat-card>
     <table mat-table #table [dataSource]="societies" >
       <ng-container matColumnDef="number">
         <th mat-header-cell *matHeaderCellDef>#</th>
@@ -42,9 +43,9 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>   
-  </mat-card>
-  <br>
+    </mat-card>
+    <br>
 
-  <button class="button" type="submit" mat-raised-button color="warm" class="button-center" (click)="back()">Back to profile</button>
-</mat-card>
+    <button class="button" type="submit" mat-raised-button color="warm" class="button-center" (click)="back()">Back to profile</button>
+  </mat-card>
 </div>
