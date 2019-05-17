@@ -686,7 +686,7 @@ export class WelcomeComponent implements OnInit {
             if(societiesPreference[k]['society'] == societiesList[j]['sponsor'])
               societyPreference = societiesPreference[k];
           }
-          if (this.prefers(sponsorsList[i]["sponsor"], societyPreference, societiesList[j]['bestMatch'])  && this.prefers(societiesList[j]["ociety"], sponsorPreference, sponsorsList[i]['bestMatch']))
+          if (this.prefers(sponsorsList[i]["sponsor"], societyPreference, societiesList[j]['bestMatch'])  && this.prefers(societiesList[j]["society"], sponsorPreference, sponsorsList[i]['bestMatch']))
               console.log("Stable marriage is not stable");
         }
       }

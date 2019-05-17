@@ -106,6 +106,35 @@ findMatches() {
   this.router.navigate([`/matchesSociety/${this.id}`]);
 }
 
+deleteSociety() {
+    this.editEverything();
+    this.sponsorService.deleteSociety(this.id).subscribe(() => {
+      this.sponsorService.deleteSocietyPreference(this.id).subscribe(() => {});
+      this.router.navigate([`/welcome`]);
+    });
+  }
+
+  editEverything(){
+    this.editAllSponsorsPreference(this.id);
+    this.applyMarriage();
+  }
+
+  editAllSponsorsPreference(societyId) {
+    var sponsorsPreference : any = [];
+    this.sponsorService.getSponsorPreference().subscribe(res => {
+      sponsorsPreference = res;
+      for (var i = 0; i < sponsorsPreference.length; i++) {
+        var preferenceList = sponsorsPreference[i]['preferenceList'];
+        for (var j = 0; j < preferenceList.length; j++){
+          if(preferenceList[j]['society'] == societyId){
+            preferenceList.splice(j, 1);
+            this.sponsorService.editSponsorPreference(sponsorsPreference[i]["sponsor"], sponsorsPreference[i]["bestMatch"], preferenceList).subscribe( () => {});
+          }
+        }
+      }
+    });
+  }
+
 applyMarriage(){
   var societiesPreference : any = [];
   var sponsorsPreference : any = [];
@@ -286,7 +315,8 @@ engageEveryone(sponsorsPreference, societiesPreference, societies, sponsors) {
           if(societiesPreference[k]['society'] == societiesList[j]['sponsor'])
             societyPreference = societiesPreference[k];
         }
-        if (this.prefers(sponsorsList[i]["sponsor"], societyPreference, societiesList[j]['bestMatch'])  && this.prefers(societiesList[j]["ociety"], sponsorPreference, sponsorsList[i]['bestMatch']))
+        if (this.prefers(sponsorsList[i]["sponsor"], societyPreference, societiesList[j]['bestMatch'])  
+        && this.prefers(societiesList[j]["society"], sponsorPreference, sponsorsList[i]['bestMatch']))
             console.log("Stable marriage is not stable");
       }
     }

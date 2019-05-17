@@ -94,7 +94,7 @@
       <br><br> 
 
       <mat-form-field class="mat-wrapper">
-        <textarea matInput placeholder="Please share some information about your company to help societies learn about you" formControlName="about" #about cols="40" rows="5"></textarea>
+        <textarea matInput placeholder="Please share some information about your company and any additional informationa about the services you offer" formControlName="about" #about cols="40" rows="5"></textarea>
       </mat-form-field>
       <br><br>
 
@@ -129,7 +129,7 @@
       </mat-form-field>
       <br><br>
 
-      <mat-slide-toggle [(ngModel)]="publicity" [ngModelOptions]="{standalone: true}" (change)="changedPublicity(publicityCounter)" class="mat-wrapper" color="primary" >Choose if you wish the society to wear your logo on their kit/merchendise</mat-slide-toggle>
+      <mat-slide-toggle [(ngModel)]="publicity" [ngModelOptions]="{standalone: true}" (change)="changedPublicity(publicityCounter)" class="mat-wrapper" color="primary" >Choose if you wish the society to wear your logo on their kit/merchendise (increasing your publicity) </mat-slide-toggle>
       <br><br>
 
       <mat-slide-toggle [(ngModel)]="promotionWant" [ngModelOptions]="{standalone: true}" (change)="changedPromotionSponsor(promotionSponsorCounter)" class="mat-wrapper" color="primary" >Choose if you wish for the society to promote you on social media</mat-slide-toggle>
@@ -154,13 +154,13 @@
       </section>
     
       <mat-form-field >
-        <mat-label> Size counter</mat-label>
+        <mat-label> Size of society counter</mat-label>
         <input matInput type="number" id="sizeCounter" formControlName="sizeCounter" #sizeCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
       <br><br>
 
       <mat-form-field>
-        <mat-label> Socials counter</mat-label>
+        <mat-label> Number of socials counter</mat-label>
         <input matInput type="number" formControlName="socialsCounter" #socialsCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
       <br><br>
@@ -178,13 +178,13 @@
       <br><br>
 
       <mat-form-field>
-        <mat-label> Services counter</mat-label>
+        <mat-label> Use of services counter</mat-label>
         <input matInput type="number" formControlName="useServicesCounter" #useServicesCounter  class="text-center" appNumbersOnly min="0" max="10" >
       </mat-form-field>
       <br><br>
 
       <mat-form-field>
-        <mat-label> Additional counter</mat-label>
+        <mat-label> Additional benefits counter</mat-label>
         <input matInput type="number" formControlName="additionalCounter" #additionalCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
 
@@ -252,7 +252,7 @@
       <br><br> 
 
       <mat-form-field class="mat-wrapper">
-        <textarea matInput placeholder="Please share some information about your societies and any additional services you might offer" formControlName="aboutSociety" #aboutSociety cols="40" rows="5"></textarea>
+        <textarea matInput placeholder="Please share some information about your society and any additional services you might offer" formControlName="aboutSociety" #aboutSociety cols="40" rows="5"></textarea>
       </mat-form-field>
       <br><br>
 
@@ -303,7 +303,7 @@
       </section> 
 
       <mat-form-field >
-        <mat-label> Money counter</mat-label>
+        <mat-label> Sum of funding counter</mat-label>
         <input matInput type="number" formControlName="moneyCounter" #moneyCounter class="counters" appNumbersOnly min="0" max="10" >
       </mat-form-field>
       <br><br>

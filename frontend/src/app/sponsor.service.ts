@@ -210,6 +210,22 @@ export class SponsorService {
     return this.http.post(`${this.uri}/sponsorPreference/editBestMatch`, sponsorPreference);
   }
 
+  deleteSponsor (sponsorId) {
+    return this.http.delete(`${this.uri}/sponsors/delete/${sponsorId}`);
+  }
+
+  deleteSociety (societyId) {
+    return this.http.delete(`${this.uri}/societies/delete/${societyId}`);
+  }
+
+  deleteSponsorPreference (sponsorId) {
+    return this.http.delete(`${this.uri}/sponsorPreference/delete/${sponsorId}`);
+  }
+
+  deleteSocietyPreference (societyId) {
+    return this.http.delete(`${this.uri}/societyPreference/delete/${societyId}`);
+  }
+
   loginCheck(name, password) {
     return this.http.get(`${this.uri}/societies/${name}`);
   }

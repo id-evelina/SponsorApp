@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SponsorService } from '../../sponsor.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatTable } from '@angular/material';
+import { splitAtColon } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-profile-sponsor',
@@ -102,7 +103,32 @@ export class ProfileSponsorComponent implements OnInit {
   }
 
   deleteSponsor() {
-    this.router.navigate([`/`]);
+    this.editEverything();
+    this.sponsorService.deleteSponsor(this.id).subscribe(() => {
+      this.sponsorService.deleteSponsorPreference(this.id).subscribe(() => {});
+      this.router.navigate([`/welcome`]);
+    });
+  }
+
+  editEverything(){
+    this.editAllSocietiesPreference(this.id);
+    this.applyMarriage();
+  }
+
+  editAllSocietiesPreference(sponsorId) {
+    var societiesPreference : any = [];
+    this.sponsorService.getSocietyPreference().subscribe(res => {
+      societiesPreference = res;
+      for (var i = 0; i < societiesPreference.length; i++) {
+        var preferenceList = societiesPreference[i]['preferenceList'];
+        for (var j = 0; j < preferenceList.length; j++){
+          if(preferenceList[j]['sponsor'] == sponsorId){
+            preferenceList.splice(j, 1);
+            this.sponsorService.editSocietyPreference(societiesPreference[i]["society"], societiesPreference[i]["bestMatch"], preferenceList).subscribe( () => {});
+          }
+        }
+      }
+    });
   }
 
   findMatches() {
@@ -290,7 +316,7 @@ export class ProfileSponsorComponent implements OnInit {
             if(societiesPreference[k]['society'] == societiesList[j]['sponsor'])
               societyPreference = societiesPreference[k];
           }
-          if (this.prefers(sponsorsList[i]["sponsor"], societyPreference, societiesList[j]['bestMatch'])  && this.prefers(societiesList[j]["ociety"], sponsorPreference, sponsorsList[i]['bestMatch']))
+          if (this.prefers(sponsorsList[i]["sponsor"], societyPreference, societiesList[j]['bestMatch'])  && this.prefers(societiesList[j]["society"], sponsorPreference, sponsorsList[i]['bestMatch']))
               console.log("Stable marriage is not stable");
         }
       }

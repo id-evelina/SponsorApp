@@ -272,6 +272,40 @@ router.route('/sponsorPreference/editBestMatch').post((req, res) => {
     });
 });
 
+router.route('/sponsors/delete/:id').delete((req, res) => {
+    Sponsor.findByIdAndDelete(req.params.id, (err) => {
+        res.json('Sponsor deleted');
+    }).catch (err => {
+        res.status(400).send('Delete failed');
+    });
+});
+
+router.route('/societies/delete/:id').delete((req, res) => {
+    Society.findByIdAndDelete(req.params.id, (err) => {
+        res.json('Society deleted');
+    }).catch (err => {
+        res.status(400).send('Delete failed');
+    });
+});
+
+router.route('/sponsorPreference/delete/:sponsor').delete((req, res) => {
+    SponsorPreference.deleteOne({sponsor: req.params.sponsor}, function(err) {})
+    .then(() =>{
+        res.json('SponsorPreference deleted');
+    }).catch (err => {
+        res.status(400).send('Delete failed');
+    });
+});
+
+router.route('/societyPreference/delete/:society').delete((req, res) => {
+    SocietyPreference.deleteOne({society: req.params.society}, function(err) {})
+    .then(() => {
+        res.json('Society Preference deleted');
+    }).catch (err => {
+        res.status(400).send('Delete failed');
+    });
+});
+
 app.use('/sponsorApp', router);
 
 app.listen(3000, () => console.log(`Express server running on port 3000`));
